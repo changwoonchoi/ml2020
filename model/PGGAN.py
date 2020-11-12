@@ -30,18 +30,19 @@ class HelpFunc(object):
         if a_channel > b_channel:
             a = a[:, :b_channel]
 
-        if a_height > b_height:
-            assert a_height % b_height == 0 and a_width % b_width == 0
-            assert a_height / b_height == a_width / b_width
-            ks = int(a_height // b_height)
-            a = F.avg_pool2d(a, kernel_size=ks, stride=ks, padding=0, ceil_mode=False, count_include_pad=False)
+        if a_width > b_width:
+#             assert a_width % b_width == 0 and a_height % b_height == 0
+#             assert a_width / b_width == a_height / b_height
+            ks = int(a_width // b_width)
+            a = F.avg_pool2d(a, kernel_size=(1,ks), stride=(1,ks), padding=0, ceil_mode=False, count_include_pad=False)
 
-        if a_height < b_height:
-            assert b_height % a_height == 0 and b_width % a_width == 0
-            assert b_height / a_height == b_width / a_width
-            sf = b_height // a_height
-            a = F.upsample(a, scale_factor=sf, mode='nearest')
-
+        if a_width < b_width:
+#             assert b_width % a_width == 0 and b_height % a_height == 0
+#             assert b_width / a_width == b_height / a_height
+            sf = b_width // a_width
+#             a = F.upsample(a, scale_factor=sf, mode='nearest')
+            a = nn.Upsample(scale_factor=(1,float(sf)), mode='nearest')(a)
+        
         # Add feature maps.
         if a_channel < b_channel:
             z = torch.zeros((a_batch, b_channel - a_channel, b_height, b_width))
@@ -151,8 +152,6 @@ class Generator(nn.Module):
 
         for level in range(self.net_level_max_):
             self._construct_by_level(level)
-            
-#         self._create_block(self.channel_list[self.net_level_max_], self.final_channel_, "ToRGB")
 
         self.net_level_ = self.net_level_max_  # set default net level as max level
         self.net_status_ = "stable"            # "stable" or "fadein"
@@ -199,6 +198,7 @@ class Generator(nn.Module):
                     output_cache.append(self.rgb_layers_[cursor](x))
                 if cursor == cur_output_level:
                     output_cache.append(self.rgb_layers_[cursor](x))
+            
             x = HelpFunc.process_transition(output_cache[0], output_cache[1]) * pre_weight \
                 + output_cache[1] * cur_weight
 
@@ -359,7 +359,7 @@ class Discriminator(nn.Module):
             x = x.reshape(B,-1)
 
             pitch_distribution = self.Softmax(self.pitch_classifier(x))
-            discriminator_output= self.discriminator_classifier(x)
+            discriminator_output= self.discriminator_classifier(x)            
             return pitch_distribution, discriminator_output
 
         else:
