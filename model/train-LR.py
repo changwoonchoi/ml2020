@@ -47,7 +47,7 @@ class PGGAN(object):
         self.gradient_weight_real_ = torch.FloatTensor([-1]).cuda()
         self.gradient_weight_fake_ = torch.FloatTensor([1]).cuda()
         self._init_network()
-        self.avg_layer = torch.nn.AvgPool2d((2,2),stride=(2,2))
+        self.avg_layer = torch.nn.AvgPool2d((2, 2), stride=(2, 2))
 
     def range_normalizer(self, train_loader, magnitude_margin, IF_margin):
         min_spec = 10000
@@ -256,7 +256,7 @@ class PGGAN(object):
                     
                 self.g_optim.step()
                 if batch_idx % 2000 == 0:
-                    self.generate_picture(fake_generated_sample[0,:,:,:], current_level_res, cur_step, batch_idx, net_status)
+                    self.generate_picture(fake_generated_sample[0, :, :, :], current_level_res, cur_step, batch_idx, net_status)
                 if batch_idx % 200 == 0:
                     print("Resolution:{}x{}, Status:{}, Cur_step:{}, Batch_id:{}, D_loss:{}, W_D:{}, M_fake:{}, M_Real:{}, GP:{}, Real_P_Loss:{}, Fake_P_Loss:{}, G_loss:{}, Net_alpha:{}".format(\
                             current_level_res, current_level_res * (2**5), net_status, cur_step, batch_idx, D_loss, Wasserstein_D, mean_fake, mean_real, real_pitch_loss, fake_pitch_loss, gradient_penalty, G_loss, net_alpha))
@@ -338,7 +338,7 @@ class PGGAN(object):
 
 def main():
     p = PGGAN(256, criterion_type="WGAN-GP")
-    p.train()   
+    p.train()
 
 
 if __name__ == "__main__":

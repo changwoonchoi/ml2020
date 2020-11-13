@@ -1,12 +1,9 @@
 import os
-
 import numpy as np
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn.init import kaiming_normal_, calculate_gain
-
 
 #os.environ["CUDA_VISIBLE_DEVICES"]
 
@@ -31,16 +28,16 @@ class HelpFunc(object):
             a = a[:, :b_channel]
 
         if a_width > b_width:
-#             assert a_width % b_width == 0 and a_height % b_height == 0
-#             assert a_width / b_width == a_height / b_height
+            # assert a_width % b_width == 0 and a_height % b_height == 0
+            # assert a_width / b_width == a_height / b_height
             ks = int(a_width // b_width)
             a = F.avg_pool2d(a, kernel_size=(1,ks), stride=(1,ks), padding=0, ceil_mode=False, count_include_pad=False)
 
         if a_width < b_width:
-#             assert b_width % a_width == 0 and b_height % a_height == 0
-#             assert b_width / a_width == b_height / a_height
+            # assert b_width % a_width == 0 and b_height % a_height == 0
+            # assert b_width / a_width == b_height / a_height
             sf = b_width // a_width
-#             a = F.upsample(a, scale_factor=sf, mode='nearest')
+            # a = F.upsample(a, scale_factor=sf, mode='nearest')
             a = nn.Upsample(scale_factor=(1,float(sf)), mode='nearest')(a)
         
         # Add feature maps.
@@ -111,7 +108,7 @@ class MiniBatchAverageLayer(nn.Module):
         # in each spatial locations to arrive at the single value
         stddev = torch.sqrt(torch.mean((x - torch.mean(x, dim=0, keepdim=True))**2, dim=0, keepdim=True) + self.offset_)
         inject_shape = list(x.size())[:]
-        inject_shape[1] = 1  #  Inject 1 line data for the second dim (channel dim). See Chapter3 and Table2
+        inject_shape[1] = 1  # Inject 1 line data for the second dim (channel dim). See Chapter3 and Table2
         inject = torch.mean(stddev, dim=1, keepdim=True)
         inject = inject.expand(inject_shape)
         return torch.cat((x, inject), dim=1)
@@ -130,7 +127,6 @@ class Generator(nn.Module):
                  fmap_max=2 ** 9,  # Maximum number of feature maps in any layer.
                  is_tanh=False,
                  channel_list=None
-
                  ):
         super(Generator, self).__init__()
         self.latent_size_ = latent_size
@@ -145,7 +141,7 @@ class Generator(nn.Module):
         image_pyramid_ = int(np.log2(resolution))  # max level of the Image Pyramid
         self.resolution_ = 2 ** image_pyramid_  # correct resolution
         self.net_level_max_ = image_pyramid_ - 1  # minus 1 in order to exclude last rgb layer
-        self.channel_list=channel_list
+        self.channel_list = channel_list
 
         self.lod_layers_ = nn.ModuleList()    # layer blocks exclude to_rgb layer
         self.rgb_layers_ = nn.ModuleList()    # rgb layers each correspond to specific level.
@@ -182,7 +178,7 @@ class Generator(nn.Module):
         if self.net_status_ == "stable":
             cur_output_level = self.net_level_max_
             # print("self.net_level_+1",self.net_level_+1)
-            for cursor in range(self.net_level_max_-1+1):
+            for cursor in range(self.net_level_max_ - 1 + 1):
                 x = self.lod_layers_[cursor](x)
 #                 print(cursor,x.size())
             x = self.rgb_layers_[cur_output_level-1](x)
@@ -192,7 +188,7 @@ class Generator(nn.Module):
             cur_output_level = self.net_level_max_ - 1
             pre_weight, cur_weight = self.net_alpha_, 1.0 - self.net_alpha_
             output_cache = []
-            for cursor in range(self.net_level_max_-1+1):
+            for cursor in range(self.net_level_max_ - 1 + 1):
                 x = self.lod_layers_[cursor](x)
                 if cursor == pre_output_level:
                     output_cache.append(self.rgb_layers_[cursor](x))
@@ -216,16 +212,16 @@ class Generator(nn.Module):
         in_level = cursor
         out_level = cursor + 1
         if self.channel_list is not None:
-            in_channels=self.channel_list[in_level]
-            out_channels=self.channel_list[out_level]
-            print("Cursor",cursor,in_channels,out_channels)
+            in_channels = self.channel_list[in_level]
+            out_channels = self.channel_list[out_level]
+            print("Cursor", cursor, in_channels, out_channels)
         else:
             in_channels, out_channels = map(self._get_channel_by_stage, (in_level, out_level))
 
 #         block_type = "First" if cursor == 0 else "UpSample"
         if cursor == 0:
             block_type = "First"
-        elif (cursor==self.net_level_max_-1) or (cursor==self.net_level_max_-2):
+        elif (cursor == self.net_level_max_ - 1) or (cursor == self.net_level_max_ - 2):
             block_type = "UpSample2"
         else:
             block_type = "UpSample"
@@ -244,14 +240,14 @@ class Generator(nn.Module):
         if block_type in ["First", "UpSample", "UpSample2"]:
             if block_type == "First":
                 block_cache.append(PixelWiseNormLayer())
-                block_cache.append(nn.Conv2d(self.latent_size_+8, out_channels,
-                                             kernel_size=(2,16), stride=1, padding=(1,15), bias=False))
+                block_cache.append(nn.Conv2d(self.latent_size_ + 8, out_channels,
+                                             kernel_size=(2, 16), stride=1, padding=(1, 15), bias=False))
             elif block_type == "UpSample":
                 block_cache.append(nn.Upsample(scale_factor=2, mode='nearest'))
                 block_cache.append(nn.Conv2d(in_channels, out_channels,
                                              kernel_size=3, stride=1, padding=1, bias=False))
             elif block_type == "UpSample2":
-                block_cache.append(nn.Upsample(scale_factor=(1,2), mode='nearest'))
+                block_cache.append(nn.Upsample(scale_factor=(1, 2), mode='nearest'))
                 block_cache.append(nn.Conv2d(in_channels, out_channels,
                                              kernel_size=3, stride=1, padding=1, bias=False))
             block_cache.append(EqualizedLearningRateLayer(block_cache[-1]))
@@ -320,28 +316,28 @@ class Discriminator(nn.Module):
 
     def forward(self, x):
         if self.net_status_ == "stable":
-#             cur_input_level = self.net_level_max_ - self.net_level_ - 1                
+            # cur_input_level = self.net_level_max_ - self.net_level_ - 1
             cur_input_level = 0
             x = self.rgb_layers_[cur_input_level](x)
         
             for cursor in range(cur_input_level, self.net_level_max_):
-#                 print(cursor)
-#                 print(x.shape)
+                # print(cursor)
+                # print(x.shape)
                 x = self.lod_layers_[cursor](x)
             
 #             print(cur_input_level)
 #             print(self.net_level_max_)
             
             B = x.size()[0]
-            x = x.reshape(B,-1) # flatten  
+            x = x.reshape(B, -1)  # flatten
             
             pitch_distribution = self.Softmax(self.pitch_classifier(x))
-            discriminator_output= self.discriminator_classifier(x)
+            discriminator_output = self.discriminator_classifier(x)
             return pitch_distribution, discriminator_output
 
         elif self.net_status_ == "fadein":
-#             pre_input_level = self.net_level_max_ - self.net_level_
-#             cur_input_level = self.net_level_max_ - self.net_level_ - 1
+            # pre_input_level = self.net_level_max_ - self.net_level_
+            # cur_input_level = self.net_level_max_ - self.net_level_ - 1
             pre_input_level = 1
             cur_input_level = 0
 
@@ -356,7 +352,7 @@ class Discriminator(nn.Module):
                 x = self.lod_layers_[cursor](x)
 
             B = x.size()[0]
-            x = x.reshape(B,-1)
+            x = x.reshape(B, -1)
 
             pitch_distribution = self.Softmax(self.pitch_classifier(x))
             discriminator_output= self.discriminator_classifier(x)            
@@ -365,16 +361,14 @@ class Discriminator(nn.Module):
         else:
             raise AttributeError("Please set the net_status: ['stable', 'fadein']")
 
-        return x
-
     def _construct_by_level(self, cursor):
         in_level = cursor
         out_level = cursor - 1
 
         if self.channel_list is not None:
-            in_channels=self.channel_list[in_level]
-            out_channels=self.channel_list[out_level]
-            print("Cursor",cursor,in_channels,out_channels)
+            in_channels = self.channel_list[in_level]
+            out_channels = self.channel_list[out_level]
+            print("Cursor", cursor, in_channels, out_channels)
         else:
             in_channels, out_channels = map(self._get_channel_by_stage, (in_level, out_level))
 
@@ -382,7 +376,7 @@ class Discriminator(nn.Module):
         
         if cursor == 1:
             block_type = "Minibatch"
-        elif (cursor == self.net_level_max_) or (cursor == self.net_level_max_-1):
+        elif (cursor == self.net_level_max_) or (cursor == self.net_level_max_ - 1):
             block_type = "DownSample2"
         else:
             block_type = "DownSample"
@@ -392,8 +386,8 @@ class Discriminator(nn.Module):
         
         """ Create pitch classifier and discriminator output"""
         if block_type == "Minibatch":
-            self.pitch_classifier= nn.Linear(self.channel_list[0]*2*16, 8)
-            self.discriminator_classifier= nn.Linear(self.channel_list[0]*2*16, 1)
+            self.pitch_classifier = nn.Linear(self.channel_list[0] * 2 * 16, 8)
+            self.discriminator_classifier = nn.Linear(self.channel_list[0] * 2 * 16, 1)
 
 
     def _create_block(self, in_channels, out_channels, block_type):
