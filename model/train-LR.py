@@ -10,10 +10,9 @@ import torch.utils.data as udata
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
-
-folder ='../train_making'
-BATCH_SIZE= 4
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+folder = '../train_making'
+BATCH_SIZE = 4
 DEVICE = torch.device("cuda")
 G_LR = 2e-4
 D_LR = 4e-4
@@ -22,8 +21,7 @@ ADAM_EPS = 1e-8
 LAMBDA_FOR_WGANGP = 1
 CRITIC_FOR_WGANGP = 1
 
-TOTAL_DATA_SIZE=25904 #Gsynth dataset size
-
+TOTAL_DATA_SIZE = 25904  # Gsynth dataset size
         
 class PGGAN(object):
     def __init__(self,
@@ -41,22 +39,16 @@ class PGGAN(object):
         self.fmap_base_ = fmap_base
         self.fmap_decay_ = fmap_decay
         self.fmap_max_ = fmap_max
-        
         # self.stable_and_fadein_step = [6, 6, 6, 6, 6, 6, 30]
-        self.stable_and_fadein_step = [1,1,1,1,1,1,1]
-
-
+        self.stable_and_fadein_step = [1, 1, 1, 1, 1, 1, 1]
         self.criterion_type_ = criterion_type
         self.is_tanh_ = is_tanh
         self.is_sigmoid_ = False if self.criterion_type_ in ["WGAN-GP"] else is_sigmoid
-
         self.gradient_weight_real_ = torch.FloatTensor([-1]).cuda()
         self.gradient_weight_fake_ = torch.FloatTensor([1]).cuda()
-    
         self._init_network()
         self.avg_layer = torch.nn.AvgPool2d((2,2),stride=(2,2))
-    
-        
+
     def range_normalizer(self, train_loader, magnitude_margin, IF_margin):
         min_spec = 10000
         max_spec = -10000
@@ -65,47 +57,43 @@ class PGGAN(object):
 
         for batch_idx, (pitch_label, mel_spec, mel_IF) in enumerate(train_loader): 
             
-            mel_spec_L = torch.transpose(mel_spec,0,1)[0]
-            mel_spec_R = torch.transpose(mel_spec,0,1)[1]
-            mel_IF_L = torch.transpose(mel_IF,0,1)[0]
-            mel_IF_R = torch.transpose(mel_IF,0,1)[1]
+            mel_spec_L = torch.transpose(mel_spec, 0, 1)[0]
+            mel_spec_R = torch.transpose(mel_spec, 0, 1)[1]
+            mel_IF_L = torch.transpose(mel_IF, 0, 1)[0]
+            mel_IF_R = torch.transpose(mel_IF, 0, 1)[1]
             
             spec_L = mel_spec_L
             IF_L = mel_IF_L
             spec_R = mel_spec_R
             IF_R = mel_IF_R
 
-            if spec_L.min() < min_spec: min_spec=spec_L.min()
-            if spec_R.min() < min_spec: min_spec=spec_R.min()
-            if spec_L.max() > max_spec: max_spec=spec_L.max()
-            if spec_R.max() > max_spec: max_spec=spec_R.max()
+            if spec_L.min() < min_spec: min_spec = spec_L.min()
+            if spec_R.min() < min_spec: min_spec = spec_R.min()
+            if spec_L.max() > max_spec: max_spec = spec_L.max()
+            if spec_R.max() > max_spec: max_spec = spec_R.max()
 
-            if IF_L.min() < min_IF: min_IF=IF_L.min()
-            if IF_R.min() < min_IF: min_IF=IF_R.min()
-            if IF_L.max() > max_IF: max_IF=IF_L.max()
-            if IF_R.max() > max_IF: max_IF=IF_R.max()
+            if IF_L.min() < min_IF: min_IF = IF_L.min()
+            if IF_R.min() < min_IF: min_IF = IF_R.min()
+            if IF_L.max() > max_IF: max_IF = IF_L.max()
+            if IF_R.max() > max_IF: max_IF = IF_R.max()
 
         self.s_a = magnitude_margin * (2.0 / (max_spec - min_spec))
         self.s_b = magnitude_margin * (-2.0 * min_spec / (max_spec - min_spec) - 1.0)
-        
         self.p_a = IF_margin * (2.0 / (max_IF - min_IF))
         self.p_b = IF_margin * (-2.0 * min_IF / (max_IF - min_IF) - 1.0)
 
-        
     def normalize(self, feature_map):
         a = np.asarray([self.s_a, self.p_a, self.s_a, self.p_a])[None, :, None, None]
         b = np.asarray([self.s_b, self.p_b, self.s_b, self.p_b])[None, :, None, None]
         a = torch.FloatTensor(a).cuda()
         b = torch.FloatTensor(b).cuda()
-        feature_map = feature_map *a + b
+        feature_map = feature_map * a + b
         return feature_map
 
-    
     def train(self):
-        
         self._init_optimizer()
         self._init_criterion()
-        
+
         # Declare Model status
         net_level = 0
         net_status = "stable"
@@ -119,16 +107,13 @@ class PGGAN(object):
                 self.stable_steps = 100
 #                 for step in range(self.stable_steps):
 #                     self._train(cur_level, net_status, net_alpha, step)
-                
             if cur_level ==0:
                 net_status == "stable"
                 for step in range(self.stable_steps):
                     self._train(cur_level, net_status, net_alpha, step)
                 print("level {} stable complete".format(cur_level))
-                
             else:
                 net_status = "fadein"
-                
                 for step in range(self.fadein_steps):
                     self._train(cur_level, "fadein", net_alpha, step)
                 print("level {} fadein complete".format(cur_level))
@@ -136,7 +121,7 @@ class PGGAN(object):
                 for step in range(self.stable_steps*2):
                     net_alpha = 1.0
                     self._train(cur_level, "stable", net_alpha, step)
-                    if cur_level ==6:
+                    if cur_level == 6:
                         torch.save(self.g_net.state_dict(), folder + '/Gnet_%dx%d_step%d.pth' % (2 ** (cur_level + 1), 2 ** (cur_level + 4), step))
                         torch.save(self.d_net.state_dict(), folder + '/Dnet_%dx%d_step%d.pth' % (2 ** (cur_level + 1), 2 ** (cur_level + 4), step))
                 print("level {} stable complete".format(cur_level))
@@ -146,57 +131,53 @@ class PGGAN(object):
 
 
     def _train(self, net_level, net_status, net_alpha, cur_step):
-        current_level_res = 2 ** 5
+        current_level_res = 2**5
         batch_idx = 0
         batch_cnt = 0
         while batch_idx < int(TOTAL_DATA_SIZE/BATCH_SIZE):
-            if batch_idx == (24000/BATCH_SIZE):
+            if batch_idx == (24000 / BATCH_SIZE):
                 train_loader = udata.DataLoader(udata.TensorDataset(
-                                    torch.Tensor(np.load('../np_array_LR/'+'pitch_list_'+ str(TOTAL_DATA_SIZE) + '.npy')),
-                                    torch.Tensor(np.load('../np_array_LR/'+'mel_spec_list_' + str(TOTAL_DATA_SIZE) + '.npy')),
-                                    torch.Tensor(np.load('../np_array_LR/'+'mel_IF_list_' + str(TOTAL_DATA_SIZE) + '.npy'))
-                                           ), batch_size=BATCH_SIZE, shuffle=True)
+                                    torch.Tensor(np.load('../np_array_LR/' + 'pitch_list_' + str(TOTAL_DATA_SIZE) + '.npy')),
+                                    torch.Tensor(np.load('../np_array_LR/' + 'mel_spec_list_' + str(TOTAL_DATA_SIZE) + '.npy')),
+                                    torch.Tensor(np.load('../np_array_LR/' + 'mel_IF_list_' + str(TOTAL_DATA_SIZE) + '.npy'))
+                ), batch_size=BATCH_SIZE, shuffle=True)
                 print("load {}th file".format(TOTAL_DATA_SIZE))
                 self.range_normalizer(train_loader, magnitude_margin=0.8, IF_margin=1.0)
                 
             elif batch_idx % (4000/BATCH_SIZE) == 0:
                 train_loader = udata.DataLoader(udata.TensorDataset(
-                                    torch.Tensor(np.load('../np_array_LR/'+'pitch_list_'+ str(batch_idx*BATCH_SIZE+4000) + '.npy')),
-                                    torch.Tensor(np.load('../np_array_LR/'+'mel_spec_list_' + str(batch_idx*BATCH_SIZE+4000) + '.npy')),
-                                    torch.Tensor(np.load('../np_array_LR/'+'mel_IF_list_' + str(batch_idx*BATCH_SIZE+4000) + '.npy'))
-                                           ), batch_size=BATCH_SIZE, shuffle=True)
-                print("load {}th file".format((batch_idx*BATCH_SIZE+4000)))
+                                    torch.Tensor(np.load('../np_array_LR/' + 'pitch_list_'+ str(batch_idx * BATCH_SIZE + 4000) + '.npy')),
+                                    torch.Tensor(np.load('../np_array_LR/' + 'mel_spec_list_' + str(batch_idx * BATCH_SIZE + 4000) + '.npy')),
+                                    torch.Tensor(np.load('../np_array_LR/' + 'mel_IF_list_' + str(batch_idx * BATCH_SIZE + 4000) + '.npy'))
+                ), batch_size=BATCH_SIZE, shuffle=True)
+                print("load {}th file".format((batch_idx * BATCH_SIZE + 4000)))
                 self.range_normalizer(train_loader, magnitude_margin=0.8, IF_margin=1.0)
                        
             for batch_idx2, (pitch_label, mel_spec, mel_IF) in enumerate(train_loader):        
 
                 # train mel spec IF
-                mel_spec_L = torch.transpose(mel_spec,0,1)[0]
-                mel_spec_R = torch.transpose(mel_spec,0,1)[1]
-                mel_IF_L = torch.transpose(mel_IF,0,1)[0]
-                mel_IF_R = torch.transpose(mel_IF,0,1)[1]
+                mel_spec_L = torch.transpose(mel_spec, 0, 1)[0]
+                mel_spec_R = torch.transpose(mel_spec, 0, 1)[1]
+                mel_IF_L = torch.transpose(mel_IF, 0, 1)[0]
+                mel_IF_R = torch.transpose(mel_IF, 0, 1)[1]
                 
                 spec_L = mel_spec_L
                 IF_L = mel_IF_L
                 spec_R = mel_spec_R
                 IF_R = mel_IF_R
 
-                stack_real_image = torch.stack((spec_L,IF_L,spec_R,IF_R),dim=1).cuda()
-                
-                stack_real_image = torch.transpose(stack_real_image,2,3)
-
+                stack_real_image = torch.stack((spec_L, IF_L, spec_R, IF_R), dim=1).cuda()
+                stack_real_image = torch.transpose(stack_real_image, 2, 3)
                 little_batch_size = spec_L.size()[0]
-
                 stack_real_image = stack_real_image.cuda()
 
-                if net_status =='stable':
+                if net_status == 'stable':
                     net_alpha = 1.0
-                elif net_status =='fadein':
-
-                    if little_batch_size==BATCH_SIZE:
+                elif net_status == 'fadein':
+                    if little_batch_size == BATCH_SIZE:
                         net_alpha = 1.0 - (cur_step * TOTAL_DATA_SIZE + batch_idx * little_batch_size) / (self.fadein_steps * TOTAL_DATA_SIZE)
                     else:
-                        net_alpha = 1.0 - (cur_step * TOTAL_DATA_SIZE + batch_idx*(BATCH_SIZE) + little_batch_size) / (self.fadein_steps * TOTAL_DATA_SIZE)
+                        net_alpha = 1.0 - (cur_step * TOTAL_DATA_SIZE + batch_idx * (BATCH_SIZE) + little_batch_size) / (self.fadein_steps * TOTAL_DATA_SIZE)
 
                 if net_alpha< 0.0:
                     print("Alpha too small <0")
@@ -208,7 +189,6 @@ class PGGAN(object):
 
                 """ Make Fake Condition Vector """
                 pitch_label = pitch_label.cuda()
-
                 
                 fake_pitch_label = torch.LongTensor(little_batch_size, 1).random_() % 8
                 fake_one_hot_pitch_condition_vector = torch.zeros(little_batch_size, 8).scatter_(1, fake_pitch_label, 1).unsqueeze(2).unsqueeze(3).cuda()
@@ -225,8 +205,7 @@ class PGGAN(object):
                 stack_real_image = self.normalize(stack_real_image)
                 
                 pitch_real, d_real = self.d_net(stack_real_image)
-                pitch_fake, d_fake  = self.d_net(fake_generated_sample.detach())
-
+                pitch_fake, d_fake = self.d_net(fake_generated_sample.detach())
 
                 # WGAN-GP
                 """ update d_net """
@@ -235,38 +214,32 @@ class PGGAN(object):
                     p.requires_grad = True 
                 self.d_net.zero_grad()
 
-
                 # Train D with Real 
-                mean_real = d_real.mean() # wgan loss 
+                mean_real = d_real.mean()  # wgan loss
                 # mean_real = nn.ReLU()(1.0 - d_real).mean() #hinge loss
 
-
                 # Train D with Fake 
-                mean_fake = d_fake.mean() # wgan loss
+                mean_fake = d_fake.mean()  # wgan loss
                 # mean_fake = nn.ReLU()(1.0 + d_fake).mean() # hinge loss
-
 
                 # Train D with GP 
                 gradient_penalty = 10 * self._gradient_penalty(stack_real_image.data, fake_generated_sample.data, little_batch_size, current_level_res)
 
-
                 # Train D with classifier Loss
                 
                 pitch_label = pitch_label.long()
-
                 real_pitch_loss = self.NLL_loss(pitch_real, pitch_label)
                 fake_pitch_loss = self.NLL_loss(pitch_fake, fake_pitch_label)
-                p_loss = 10 *(real_pitch_loss)
+                p_loss = 10 * real_pitch_loss
 
-                
                 # D_loss = mean_fake + mean_real + gradient_penalty + p_loss # hinge
-                D_loss = mean_fake - mean_real + gradient_penalty + p_loss # wgan-gp
+                D_loss = mean_fake - mean_real + gradient_penalty + p_loss  # wgan-gp
                 Wasserstein_D = mean_real - mean_fake
 
                 D_loss.backward()
                 self.d_optim.step()
 
-                if batch_idx % 3 == 0: # avoid Mode Collpase which caused by strong Generator
+                if batch_idx % 3 == 0:  # avoid Mode Collpase which caused by strong Generator
                     """ update g_net """
                     for p in self.d_net.parameters():
                         p.requires_grad = False  # to avoid computation
@@ -276,42 +249,39 @@ class PGGAN(object):
                     mean_fake = d_fake.mean()
 
                     fake_pitch_loss = self.NLL_loss(pitch_fake, fake_pitch_label)
-                    timed_fake_pitch_loss = 10 *fake_pitch_loss
+                    timed_fake_pitch_loss = 10 * fake_pitch_loss
                     G_loss = -mean_fake + timed_fake_pitch_loss
                     G_loss.backward()
 
                     
                 self.g_optim.step()
-                if batch_idx %2000 ==0:
+                if batch_idx % 2000 == 0:
                     self.generate_picture(fake_generated_sample[0,:,:,:], current_level_res, cur_step, batch_idx, net_status)
-                if batch_idx %200==0:
+                if batch_idx % 200 == 0:
                     print("Resolution:{}x{}, Status:{}, Cur_step:{}, Batch_id:{}, D_loss:{}, W_D:{}, M_fake:{}, M_Real:{}, GP:{}, Real_P_Loss:{}, Fake_P_Loss:{}, G_loss:{}, Net_alpha:{}".format(\
-                            current_level_res, current_level_res*(2**5), net_status, cur_step, batch_idx, D_loss, Wasserstein_D, mean_fake, mean_real, real_pitch_loss, fake_pitch_loss, gradient_penalty, G_loss, net_alpha))
+                            current_level_res, current_level_res * (2**5), net_status, cur_step, batch_idx, D_loss, Wasserstein_D, mean_fake, mean_real, real_pitch_loss, fake_pitch_loss, gradient_penalty, G_loss, net_alpha))
 
-                batch_idx = batch_cnt*int(4000/BATCH_SIZE) + batch_idx2 + 1
-                if batch_idx2 == int(4000/BATCH_SIZE) - 1:
+                batch_idx = batch_cnt * int(4000 / BATCH_SIZE) + batch_idx2 + 1
+                if batch_idx2 == int(4000 / BATCH_SIZE) - 1:
                     batch_cnt = batch_cnt + 1
                 
-        print("self.fadein_steps",self.fadein_steps* TOTAL_DATA_SIZE,\
-              "cur_step",(cur_step * TOTAL_DATA_SIZE + batch_idx * little_batch_size),\
-              "net_alpha",net_alpha
-              )
-        
+        print("self.fadein_steps",self.fadein_steps* TOTAL_DATA_SIZE, "cur_step",
+              (cur_step * TOTAL_DATA_SIZE + batch_idx * little_batch_size), "net_alpha", net_alpha)
         
     def generate_picture(self, spec, resolution, step, batch_idx, status):
-#         spec = spec.data.cpu().numpy()
-#         stack_spec = np.hstack((spec[0],spec[1],spec[2],spec[3]))
-#         flip_stack = np.flipud(stack_spec)
-#         fig = plt.figure(figsize=(20,7))
-#         plt.imshow(stack_spec,aspect='auto')
+        # spec = spec.data.cpu().numpy()
+        # stack_spec = np.hstack((spec[0],spec[1],spec[2],spec[3]))
+        # flip_stack = np.flipud(stack_spec)
+        # fig = plt.figure(figsize=(20,7))
+        # plt.imshow(stack_spec,aspect='auto')
 
         spec = spec.data.cpu().numpy()
-        stack_spec = np.hstack((spec[0],spec[2]))
+        stack_spec = np.hstack((spec[0], spec[2]))
         flip_stack = np.flipud(stack_spec)
-        fig = plt.figure(figsize=(20,7))
-        plt.imshow(stack_spec,aspect='auto')    
+        fig = plt.figure(figsize=(20, 7))
+        plt.imshow(stack_spec, aspect='auto')
         
-        plt.savefig( folder + "/{}_{}_{}_{}_{}_sample.png".format(resolution, resolution*(2**5), status, step, batch_idx ))
+        plt.savefig(folder + "/{}_{}_{}_{}_{}_sample.png".format(resolution, resolution * (2**5), status, step, batch_idx ))
         plt.close()
 
     def _init_criterion(self):
@@ -324,9 +294,9 @@ class PGGAN(object):
         # Init Generator and Discriminator
         print("Create Network")
         self.g_net = Generator(256, self.latent_size_, self.rgb_channel_,
-                                is_tanh=self.is_tanh_, channel_list=[256,256,256,256,256,128,64,32])
+                                is_tanh=self.is_tanh_, channel_list=[256, 256, 256, 256, 256, 128, 64, 32])
         self.d_net = Discriminator(256, self.rgb_channel_,
-                                   is_sigmoid=self.is_sigmoid_, channel_list=[256,256,256,256,128,64,32,32])
+                                   is_sigmoid=self.is_sigmoid_, channel_list=[256, 256, 256, 256, 128, 64, 32, 32])
         # if TO_GPU:
         self.g_net.cuda(0)
         self.d_net.cuda(0)
@@ -347,7 +317,7 @@ class PGGAN(object):
         
         epsilon = torch.rand(batch_size, 1)
         
-        epsilon = epsilon.expand(batch_size, int(real_data.nelement() / batch_size)).contiguous().view(batch_size, 4, res, res*(2**5))
+        epsilon = epsilon.expand(batch_size, int(real_data.nelement() / batch_size)).contiguous().view(batch_size, 4, res, res * (2**5))
         epsilon = epsilon.cuda()
         median_x = epsilon * real_data + ((1 - epsilon) * fake_data)
 
@@ -364,8 +334,6 @@ class PGGAN(object):
 
         gradient_penalty = ((gradients.norm(2, dim=1) - 1) ** 2).mean() * LAMBDA_FOR_WGANGP
         return gradient_penalty
-
-
 
 
 def main():
