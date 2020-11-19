@@ -15,7 +15,8 @@ class Gset(data.Dataset):
         """Constructor"""
         assert(isinstance(root, str))
         self.root = root
-        self.filenames = glob.glob(os.path.join(root, "audio/*.wav"))
+
+        self.filenames = glob.glob(os.path.join(root, "audio/*/*.wav"))
         """Labeling 참조하는거 때려치고 걍 뽑자"""
 #         with open(os.path.join(root, "pitchList.csv"), newline='') as csvfile:
 #             self.csvdata = csv.DictReader(self.csvfile)

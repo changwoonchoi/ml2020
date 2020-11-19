@@ -294,7 +294,7 @@ class Discriminator(nn.Module):
         image_pyramid_ = int(np.log2(resolution))  # max level of the Image Pyramid
         self.resolution_ = 2 ** image_pyramid_  # correct resolution
         self.net_level_max_ = image_pyramid_ - 1  # minus 1 in order to exclude first rgb layer
-        self.channel_list=channel_list
+        self.channel_list = channel_list
         self.lod_layers_ = nn.ModuleList()  # layer blocks exclude to_rgb layer
         self.rgb_layers_ = nn.ModuleList()  # rgb layers each correspond to specific level.
 
