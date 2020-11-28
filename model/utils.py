@@ -100,3 +100,14 @@ def std_over_time(audio, sr=44100, win_size = 1764, hop_size = None,
         if continue_plot == False:
             plt.show()
     return t_index, stds
+
+### function find_label
+
+def find_label(file_path):
+    '''
+    file_path : single .wav file path or file name as string
+    output : label('N' or 'W') of .wav(ex: ['N','W','W'])
+    '''
+    label = pd.read_csv('../data/label.csv',  index_col=0)
+    file_name = file_path.split('/')[-1]
+    return label.loc[file_name,:].values
