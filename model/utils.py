@@ -41,6 +41,13 @@ def k_NNA(k, set_1, set_2):
     '''
     raise NotImplementedError
 
+def jsd(set_1, set_2):
+    '''
+    set_1 : normal set of inferred audios
+    set_2 : normal set of reference audios (have same size with set_1)
+    output : JSD(Jensen-Shannon Divergence) between two sets
+    '''
+
 def classify(audio):
     '''
     returns the class of stereo audio
