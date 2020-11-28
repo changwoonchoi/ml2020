@@ -17,7 +17,15 @@ class Gset(data.Dataset):
         assert(isinstance(root, str))
         self.root = root
 
-        self.filenames = glob.glob(os.path.join(root, "audio/all/*.wav"))
+        # self.filenames = glob.glob(os.path.join(root, "audio/all/*.wav"))
+        self.filenames = []
+        train_set = open(os.path.join(root, '../data/train.txt'), 'r')
+        while True:
+            line = train_set.readline()[:-1]
+            if not line:
+                break
+            self.filenames.append(line)
+        train_set.close()
         """Labeling 참조하는거 때려치고 걍 뽑자"""
 #         with open(os.path.join(root, "pitchList.csv"), newline='') as csvfile:
 #             self.csvdata = csv.DictReader(self.csvfile)
@@ -39,20 +47,20 @@ class Gset(data.Dataset):
 
 #         sample_left.astype(np.int16)
 #         sample_right.astype(np.int16)
-        
+
         if self.transform is not None:
             sample_left = self.transform(sample_left)
             sample_right = self.transform(sample_right)
-        
+
 #         for row in csvdata:
 #             if name == os.path.join(self.root, "audio", row['file_name']):
 #                 pitch_data = row['pitch']
 
         """pitch 뽑은 뒤의 comma는 dtype때문에 뜨더라"""
-        
+
         pitch_data_char = os.path.splitext(name)[0].split('_')[1]
         pitch_data = pitch_table.index(pitch_data_char) + 24
-        
+
         return sample_left, sample_right, pitch_data
 
 

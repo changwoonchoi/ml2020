@@ -12,7 +12,7 @@ import spectrograms_helper as spec_helper
 import matplotlib.pyplot as plt
 
 toFloat = transforms.Lambda(lambda x: x / np.iinfo(np.int16).max)
-dataset = Gset("../data", transform=toFloat)
+dataset = Gset("./", transform=toFloat)
 loader = data.DataLoader(dataset, batch_size=1, shuffle=True)
 
 def expand(mat):
@@ -80,14 +80,14 @@ for samples_left, samples_right, pitches in loader:
     if count%1000==0:
         print(count)
     if count%4000==0:
-        np.save('../data/np_array_MS/' + 'pitch_list_' + str(count), pitch_list)
-        np.save('../data/np_array_MS/' + 'mel_spec_list_' + str(count), mel_spec_list)
-        np.save('../data/np_array_MS/' + 'mel_IF_list_' + str(count), mel_IF_list)
+        np.save('../data/np_array_train_MS/' + 'pitch_list_' + str(count), pitch_list)
+        np.save('../data/np_array_train_MS/' + 'mel_spec_list_' + str(count), mel_spec_list)
+        np.save('../data/np_array_train_MS/' + 'mel_IF_list_' + str(count), mel_IF_list)
         pitch_list=[]
         mel_spec_list=[]
         mel_IF_list=[]
         print(str(count) + " saved")
-np.save('../data/np_array_MS/' + 'pitch_list_' + str(count), pitch_list)
-np.save('../data/np_array_MS/' + 'mel_spec_list_' + str(count), mel_spec_list)
-np.save('../data/np_array_MS/' + 'mel_IF_list_' + str(count), mel_IF_list)
+np.save('../data/np_array_train_MS/' + 'pitch_list_' + str(count), pitch_list)
+np.save('../data/np_array_train_MS/' + 'mel_spec_list_' + str(count), mel_spec_list)
+np.save('../data/np_array_train_MS/' + 'mel_IF_list_' + str(count), mel_IF_list)
 print(str(count) + " saved")
