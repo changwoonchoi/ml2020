@@ -8,6 +8,10 @@ def distance(std1, std2):
     std2 : distribution of std(S) for audio2
     output : EMD(earth mover's distance) of two distribution
     '''
+    # normalize std1, std2 to convert into probabilistic distribution function
+
+    # calculate EMD between two pdfs
+
     raise NotImplementedError
 
 def side_std(audio):
@@ -59,37 +63,40 @@ def classify(audio):
 
 ### function std_over_time
 
-## inputs informations
-# audio.shape = 2,44100*0.4
-# win_size : (default)40ms
-# hop_size : (default)0.25*win_size
-# threshold : (~50% percentile of N-W criteria)0.125
-# display : True for show figure
-# continue_plot : True for many plots in one figure
+def std_over_time(audio, sr=44100, win_size = 1764, hop_size = None,
+                  threshold = 0.125, display=False, continue_plot=False):
+    '''
+    ## inputs
+    audio: np array of size 2 x 44100*0.4
+    win_size: (default)40ms
+    hop_size: (default)0.25*win_size
+    threshold: (~50% percentile of N-W criteria)0.125
+    display: True for show figure
+    continue_plot: True for many plots in one figure
 
-## outputs
-# t_index, stds
-
-def std_over_time(audio, win_size = 1764, hop_size = None ,threshold = 0.125, display=False, continue_plot=False): 
-    if hop_size ==None:
-        hop_size = int(win_size/4)
-    theta = np.pi/4
-    trans = np.array([[np.cos(theta) ,-np.sin(theta)],[np.sin(theta), np.cos(theta)]])
-    points = np.dot(trans,audio)[0]
+    ## outputs
+    t_index, stds
+    '''
+    if hop_size == None:
+        hop_size = int(win_size / 4)
+    theta = np.pi / 4
+    trans = np.array([[np.cos(theta), -np.sin(theta)],
+                      [np.sin(theta), np.cos(theta)]])
+    points = np.dot(trans, audio)[0]
     stds = []
-    t_index = np.arange(int(win_size/2), int(len(points)-win_size/2), hop_size)/sr
-    for  t in np.arange(0, int(len(points)-win_size), hop_size):
-       stds.append(np.std(points[t:t+win_size]))
-    if display ==True:
-        if continue_plot==False:
-            plt.figure(figsize=(15,8))
+    t_index = np.arange(int(win_size / 2), int(len(points) - win_size / 2), hop_size) / sr
+    for t in np.arange(0, int(len(points) - win_size), hop_size):
+        stds.append(np.std(points[t:t + win_size]))
+    if display == True:
+        if continue_plot == False:
+            plt.figure(figsize=(15, 8))
         plt.plot(t_index, stds, linewidth=1)
         plt.axhline(threshold, color='r')
-        plt.xlim([0,0.4])
-        plt.ylim([0,0.5])
+        plt.xlim([0, 0.4])
+        plt.ylim([0, 0.5])
         plt.title('std moving window')
         plt.xlabel('time(s)')
         plt.ylabel('standard deviation')
-        if continue_plot==False:
+        if continue_plot == False:
             plt.show()
     return t_index, stds
