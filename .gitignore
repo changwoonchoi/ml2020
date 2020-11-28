@@ -1,8 +1,10 @@
 *.idea
-data/*
+data/**
 train_making/*
 log/*
 log/*/*
 model_16k/*
 model/__pycache__/*
 result/*
+!data/test.txt
+!data/train.txt
