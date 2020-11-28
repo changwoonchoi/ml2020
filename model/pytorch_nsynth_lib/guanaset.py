@@ -9,6 +9,7 @@ import torchvision.transforms as transforms
 
 pitch_table = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
+
 class Gset(data.Dataset):
 
     def __init__(self, root, transform=None):
@@ -16,7 +17,7 @@ class Gset(data.Dataset):
         assert(isinstance(root, str))
         self.root = root
 
-        self.filenames = glob.glob(os.path.join(root, "audio/*/*.wav"))
+        self.filenames = glob.glob(os.path.join(root, "audio/all/*.wav"))
         """Labeling 참조하는거 때려치고 걍 뽑자"""
 #         with open(os.path.join(root, "pitchList.csv"), newline='') as csvfile:
 #             self.csvdata = csv.DictReader(self.csvfile)

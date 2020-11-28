@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
 # os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-folder = '../log_batch=8'
+folder = '../log_MS'
 BATCH_SIZE = 8
 # DEVICE = torch.device("cuda")
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -140,18 +140,18 @@ class PGGAN(object):
         while batch_idx < int(TOTAL_DATA_SIZE / BATCH_SIZE):
             if batch_idx == (8000 / BATCH_SIZE):
                 train_loader = udata.DataLoader(udata.TensorDataset(
-                                    torch.Tensor(np.load('../data/np_array_LR/' + 'pitch_list_' + str(TOTAL_DATA_SIZE) + '.npy')),
-                                    torch.Tensor(np.load('../data/np_array_LR/' + 'mel_spec_list_' + str(TOTAL_DATA_SIZE) + '.npy')),
-                                    torch.Tensor(np.load('../data/np_array_LR/' + 'mel_IF_list_' + str(TOTAL_DATA_SIZE) + '.npy'))
+                                    torch.Tensor(np.load('../data/np_array_MS/' + 'pitch_list_' + str(TOTAL_DATA_SIZE) + '.npy')),
+                                    torch.Tensor(np.load('../data/np_array_MS/' + 'mel_spec_list_' + str(TOTAL_DATA_SIZE) + '.npy')),
+                                    torch.Tensor(np.load('../data/np_array_MS/' + 'mel_IF_list_' + str(TOTAL_DATA_SIZE) + '.npy'))
                 ), batch_size=BATCH_SIZE, shuffle=True)
                 print("load {}th file".format(TOTAL_DATA_SIZE))
                 self.range_normalizer(train_loader, magnitude_margin=0.8, IF_margin=1.0)
 
             elif batch_idx % (4000 / BATCH_SIZE) == 0:
                 train_loader = udata.DataLoader(udata.TensorDataset(
-                                    torch.Tensor(np.load('../data/np_array_LR/' + 'pitch_list_' + str(batch_idx * BATCH_SIZE + 4000) + '.npy')),
-                                    torch.Tensor(np.load('../data/np_array_LR/' + 'mel_spec_list_' + str(batch_idx * BATCH_SIZE + 4000) + '.npy')),
-                                    torch.Tensor(np.load('../data/np_array_LR/' + 'mel_IF_list_' + str(batch_idx * BATCH_SIZE + 4000) + '.npy'))
+                                    torch.Tensor(np.load('../data/np_array_MS/' + 'pitch_list_' + str(batch_idx * BATCH_SIZE + 4000) + '.npy')),
+                                    torch.Tensor(np.load('../data/np_array_MS/' + 'mel_spec_list_' + str(batch_idx * BATCH_SIZE + 4000) + '.npy')),
+                                    torch.Tensor(np.load('../data/np_array_MS/' + 'mel_IF_list_' + str(batch_idx * BATCH_SIZE + 4000) + '.npy'))
                 ), batch_size=BATCH_SIZE, shuffle=True)
                 print("load {}th file".format((batch_idx * BATCH_SIZE + 4000)))
                 self.range_normalizer(train_loader, magnitude_margin=0.8, IF_margin=1.0)
