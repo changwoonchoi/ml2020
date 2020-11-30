@@ -35,6 +35,20 @@ def make_set(dir, type='dir'):
     wave_set = np.stack(wave_set, axis=0)
     return wave_set
 
+def wave_set2std_set(wave_set):
+    """
+    convert wave set to set of stds over time
+    wave_set : (N x 2 x -1)
+    output : (N x -1)
+    """
+    std_set = []
+    for i in range(wave_set.shape[0]):
+        wave = wave_set[i]
+        std = side_std(wave)
+        std_set.append(std)
+    std_set = np.stack(std_set, axis=0)
+    return std_set
+
 
 def side_std(audio):
     """
@@ -67,16 +81,20 @@ def distance(std1, std2):
     return d
 
 
-def dist_matrix(set1, set2):
+def dist_matrix(gen_set, ref_set):
     """
-    set_1 : normal set of inferred audios
-    set_2 : normal set of reference audios (have same size with set_1)
-    output :  distance matrix between two audio sets
+    gen_set : normal set of inferred audios (G x 44100 * 0.4)
+    ref_set : normal set of reference audios (R x 44100 * 0.4) (i.e. testset)
+    output: distance matrix between two audio sets
+            (G + R) x (G + R) upper triangular matrix
+            dist_mat[i][j] = distance(gen+ref[i], gen+ref[j])
     """
-    g = set1.shape[0]
-    r = set2.shape[0]
-    gen_ref_set = torch.cat((set1, set2), dim=0).view((g + r, 1, set1.shape[1], -1))
-    dist_mat = torch.zeros((g + r, g + r))
+    g = gen_set.shape[0]
+    r = ref_set.shape[0]
+
+    gen_ref_set = np.concatenate((gen_set, ref_set), axis=0).reshape(g + r, gen_set.shape[1])
+    dist_mat = np.zeros((g + r, g + r))
+
     for i in range(g + r):
         for j in range(i + 1, g + r):
             dist_mat[i][j] = distance(gen_ref_set[i], gen_ref_set[j])
@@ -84,32 +102,53 @@ def dist_matrix(set1, set2):
     return g, r, dist_mat
 
 
-def cov(dist_mat):
+def cov(g, r, dist_mat):
     """
-    set_1 : normal set of inferred audios
-    set_2 : normal set of reference audios (have same size with set_1)
-    output : calculated Coverage between inferred set and reference set
+    g : |G| (size of generated set)
+    r : |R| (size of reference set)
+    dist_mat : distance matrix
+    output : calculated Coverage between generated set and reference set
     """
-    raise NotImplementedError
+    matched_idx = np.zeros(g)
+    for i in range(g):
+        matched_idx[i] = np.argmin(dist_mat[i, g:])
+    return np.unique(matched_idx).shape[0] / r
 
 
-def mmd(dist_mat):
+def mmd(g, r, dist_mat):
     """
-    set_1 : normal set of inferred audios
-    set_2 : normal set of reference audios (have same size with set_1)
-    output : calculated MMD(Minimum Matching Distance) between inferred set and reference set
+    g : |G| (size of generated set)
+    r : |R| (size of reference set)
+    dist_mat : distance matrix
+    output : calculated MMD (Minimum Matching Distance) between inferred set and reference set
     """
-    raise NotImplementedError
+    mmd_val = 0
+    for i in range(r):
+        mmd_val += np.min(dist_mat[:g, g + i])
+    return mmd_val / r
 
 
-def k_nna(k, dist_mat):
+def k_nna(g, r, dist_mat, k=1):
     """
     k : parameter for k-NNA(k-nearest neighbor accuracy)
-    set_1 : normal set of inferred audios
-    set_2 : normal set of reference audios (have same size with set_1)
+    g : |G| (size of generated set)
+    r : |R| (size of reference set)
+    dist_mat : distance matrix
     output : calculated k-NNA
     """
-    raise NotImplementedError
+    if k == 1:
+        k_nna_val = 0
+        for i in range(g + r):
+            min_idx = np.argmin(np.concatenate(dist_mat[:i, i], np.array([100000.]), dist_mat[i, i+1:]))
+            if i < g:
+                if min_idx < g:
+                    k_nna_val += 1
+            else:
+                if min_idx >= g:
+                    k_nna_val += 1
+    else:
+        raise NotImplementedError
+    return k_nna_val / (g + r)
 
 
 def jsd(set_1, set_2):
