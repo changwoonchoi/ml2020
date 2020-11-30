@@ -6,3 +6,4 @@ librosa
 jupyterlab
 intervaltree
 pyemd
+pandas
