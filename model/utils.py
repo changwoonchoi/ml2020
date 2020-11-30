@@ -1,8 +1,6 @@
 import os
 from glob import glob
 import numpy as np
-import torch
-from pyemd import emd
 import matplotlib.pyplot as plt
 import pandas as pd
 import scipy.io.wavfile
@@ -34,6 +32,7 @@ def make_set(dir, type='dir'):
         wave_set.append(audio)
     wave_set = np.stack(wave_set, axis=0)
     return wave_set
+
 
 def wave_set2std_set(wave_set):
     """
@@ -139,7 +138,7 @@ def k_nna(g, r, dist_mat, k=1):
     if k == 1:
         k_nna_val = 0
         for i in range(g + r):
-            min_idx = np.argmin(np.concatenate(dist_mat[:i, i], np.array([100000.]), dist_mat[i, i+1:]))
+            min_idx = np.argmin(np.concatenate((dist_mat[:i, i], np.array([100000.]), dist_mat[i, i+1:])))
             if i < g:
                 if min_idx < g:
                     k_nna_val += 1
@@ -157,6 +156,7 @@ def jsd(set_1, set_2):
     set_2 : normal set of reference audios (have same size with set_1)
     output : JSD(Jensen-Shannon Divergence) between two sets
     """
+    raise NotImplementedError
 
 
 def classify(audio):

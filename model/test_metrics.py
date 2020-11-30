@@ -44,15 +44,17 @@ d = distance(stds_1, stds_2)
 # test distance
 ref_set = make_set('../data/test.txt', type='txt')
 gen_set = make_set(args.gen_dir, type='dir')
-ref_set = ref_set[:100, :, :15872]
+ref_set = ref_set[:, :, :15872]
 ref_std_set = wave_set2std_set(ref_set)
 gen_std_set = wave_set2std_set(gen_set)
-dist_mat = dist_matrix(gen_std_set, ref_std_set)
-breakpoint()
+g, r, dist_mat = dist_matrix(gen_std_set, ref_std_set)
 # test MMD
-MMD = mmd(dist_mat)
+MMD = mmd(g, r, dist_mat)
 # test cov
-COV = cov(dist_mat)
+COV = cov(g, r, dist_mat)
 # test k-NNA
-k_NNA = k_nna(dist_mat)
+k_NNA = k_nna(g, r, dist_mat, k=1)
 # test JSD
+print('MMD: {}'.format(MMD))
+print('COV: {}'.format(COV * 100))
+print('1-NNA: {}'.format(k_NNA * 100))
