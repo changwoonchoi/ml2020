@@ -16,37 +16,35 @@ import scipy.io.wavfile as wv
 import numpy as np
 import argparse
 
+
 def polar2rect(mag, phase_angle):
     """Convert polar-form complex number to its rectangular form."""
-    temp_mag = np.zeros(mag.shape,dtype=np.complex_)
-    temp_phase = np.zeros(mag.shape,dtype=np.complex_)
-
+    temp_mag = np.zeros(mag.shape, dtype=np.complex_)
+    temp_phase = np.zeros(mag.shape, dtype=np.complex_)
     for i, time in enumerate(mag):
         for j, time_id in enumerate(time):
-            temp_mag[i,j] = np.complex(mag[i,j])
-
+            temp_mag[i, j] = np.complex(mag[i, j])
     for i, time in enumerate(phase_angle):
         for j, time_id in enumerate(time):
-            temp_phase[i,j] = np.complex(np.cos(phase_angle[i,j]), np.sin(phase_angle[i,j]))
-
+            temp_phase[i, j] = np.complex(np.cos(phase_angle[i, j]), np.sin(phase_angle[i, j]))
     return temp_mag * temp_phase
 
 def mag_plus_phase(mag, IF):
-
-    mag =  np.exp(mag) - 1.0e-6
+    mag = np.exp(mag) - 1.0e-6
     reconstruct_magnitude = np.abs(mag)
     reconstruct_phase_angle = np.cumsum(IF * np.pi, axis=1)
     stft = polar2rect(reconstruct_magnitude, reconstruct_phase_angle)
-    inverse = librosa.istft(stft, hop_length = 512, win_length=2048, window = 'hann')
-
+    inverse = librosa.istft(stft, hop_length=512, win_length=2048, window='hann')
     return inverse
 
+
 def denormalize(spec, IF, s_a, s_b, p_a, p_b):
-    spec = (spec -s_b) / s_a
-    IF = (IF-p_b) / p_a
+    spec = (spec - s_b) / s_a
+    IF = (IF - p_b) / p_a
     return spec, IF
 
-def output_file(model,seed, pitch):
+
+def output_file(model, seed, pitch):
     fake_pitch_label = torch.LongTensor(1, 1).random_() % 8
     pitch = [[pitch]]
     fake_pitch_label = torch.LongTensor(pitch)
@@ -60,17 +58,17 @@ def output_file(model,seed, pitch):
     IF_L = output[1].data.cpu().numpy().T
     spec_L, IF_L = denormalize(spec_L, IF_L, s_a=0.060437, s_b=0.034964, p_a=0.0034997, p_b=-0.010897)
     back_mag_L, back_IF_L = spec_helper.melspecgrams_to_specgrams(spec_L, IF_L)
-    back_mag_L = np.vstack((back_mag_L,back_mag_L[1023]))
-    back_IF_L = np.vstack((back_IF_L,back_IF_L[1023]))
-    audio_L = mag_plus_phase(back_mag_L,back_IF_L)
+    back_mag_L = np.vstack((back_mag_L, back_mag_L[1023]))
+    back_IF_L = np.vstack((back_IF_L, back_IF_L[1023]))
+    audio_L = mag_plus_phase(back_mag_L, back_IF_L)
 
     spec_R = output[2].data.cpu().numpy().T
     IF_R = output[3].data.cpu().numpy().T
     spec_R, IF_R = denormalize(spec_R, IF_R, s_a=0.060437, s_b=0.034964, p_a=0.0034997, p_b=-0.010897)
     back_mag_R, back_IF_R = spec_helper.melspecgrams_to_specgrams(spec_R, IF_R)
-    back_mag_R = np.vstack((back_mag_R,back_mag_R[1023]))
-    back_IF_R = np.vstack((back_IF_R,back_IF_R[1023]))
-    audio_R = mag_plus_phase(back_mag_R,back_IF_R)
+    back_mag_R = np.vstack((back_mag_R, back_mag_R[1023]))
+    back_IF_R = np.vstack((back_IF_R, back_IF_R[1023]))
+    audio_R = mag_plus_phase(back_mag_R, back_IF_R)
     return audio_L, audio_R
 
 def gen_audio(gnet, seed, pitch, type):
@@ -118,7 +116,7 @@ parser.add_argument('--sample_num')
 parser.add_argument('--save_dir')
 args = parser.parse_args()
 
-g_net = Generator(256, 256, 4, is_tanh=True,channel_list=[256,256,256,256,256,128,64,32])
+g_net = Generator(256, 256, 4, is_tanh=True, channel_list=[256, 256, 256, 256, 256, 128, 64, 32])
 g_checkpoint = torch.load(args.model)
 g_net.load_state_dict(g_checkpoint)
 g_net.net_config = [6, 'stable', 1]
@@ -127,4 +125,4 @@ g_net.cuda()
 for i in range(int(args.sample_num)):
     fake_seed = torch.randn(1, 256, 1, 1).cuda()
     audio = gen_audio(g_net, fake_seed, 3, args.type)
-    wv.write(os.path.join(args.save_dir, '{}.wav'.format(i)),44100, audio)
+    wv.write(os.path.join(args.save_dir, '{}.wav'.format(i)), 44100, audio)
