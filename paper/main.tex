@@ -1,11 +1,15 @@
 \documentclass{article}
 \usepackage{spconf,amsmath,graphicx}
+\usepackage{tabularx}
+\usepackage{multicol} 
+\usepackage{multirow} 
+\usepackage{booktabs}
 \usepackage{hyperref}
 
 \title{Title}
 
-\name{Sungrae Kim$^{\star}$ \qquad Changwoon Choi$^{\dagger}$ \qquad Sangwoo Han$^{\ddagger}$}
-\address{$^{\star}$ Machine Engineering, Seoul National University \\ $^{\dagger}$ Electrical \& Computer Engineering, Seoul National University \\$^{\ddagger}$ Earth and Environmental Sciences, Seoul National University}
+\name{Seongrae Kim$^{\star}$ \qquad Changwoon Choi$^{\dagger}$ \qquad Sangwoo Han$^{\ddagger}$}
+\address{$^{\star}$ Machine Engineering, Seoul National University \\ $^{\dagger}$ Electrical \& Computer Engineering, Seoul National University \\$^{\ddagger}$ Earth \& Environmental Sciences, Seoul National University}
 
 \begin{document}
 \maketitle
@@ -22,19 +26,9 @@ Generative model, multi-channel audio
 \input{02-related_work}
 \input{03-method}
 \input{04-experiment}
-\if 0
-LR 
-MMD: 0.024944539051799476
-COV: 40.88541666666667
-1-NNA: 72.39583333333334
-MS
-MMD: 0.027058247218896117
-COV: 41.66666666666667
-1-NNA: 70.87673611111111
-\fi
-\input{05-conclusion}
 
+\input{05-conclusion}
 \bibliographystyle{IEEEbib}
 \bibliography{our_bib}
-
+\input{06-appendix}
 \end{document}
