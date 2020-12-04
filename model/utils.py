@@ -95,6 +95,7 @@ def dist_matrix(gen_set, ref_set):
     dist_mat = np.zeros((g + r, g + r))
 
     for i in range(g + r):
+        print('{} / {}'.format(i, g + r))
         for j in range(i + 1, g + r):
             dist_mat[i][j] = distance(gen_ref_set[i], gen_ref_set[j])
 
@@ -164,7 +165,33 @@ def classify(audio):
     returns the class of stereo audio
     {NNN: 0, NNW: 1, NWN: 2, ..., WWW: 7}
     """
+    label = {'NNN': 0, 'NNW': 1, 'NWN': 2, 'NWW': 3, 'WNN': 4, 'WNW': 5,
+             'WWN': 6, 'WWW': 7}
+    str = ''
+    step = audio.shape[1]
+
     raise NotImplementedError
+
+
+def stereo_classification(stereo_audio, th=0.125):
+    """
+    stereo_audio: numpy array with size (2 X N)
+    th: threshold of std
+    output : array of string with length 3
+    """
+    time_split_mark = [0, 2940, 8820, 15872]
+    trans = np.array([[np.cos(np.pi/4),-np.sin(np.pi/4)],[np.sin(np.pi/4),np.cos(np.pi/4)]])
+    stereo_class = []
+    for i in range(len(time_split_mark)-1):
+        splited_audio = stereo_audio[:, time_split_mark[i]:time_split_mark[i+1]]
+        split_std = np.std(np.dot(trans, splited_audio)[0])
+        if split_std > th:
+            classed = "W"
+            stereo_class = np.append(stereo_class, np.array([classed]))
+        else:
+            classed = "N"
+            stereo_class = np.append(stereo_class, np.array([classed]))
+    return stereo_class
 
 
 def std_over_time(audio, sr=44100, win_size=1764, hop_size=None,
