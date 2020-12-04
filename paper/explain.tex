@@ -1,15 +1,38 @@
 \documentclass{article}
-\usepackage{amsmath,graphicx}
+\usepackage{amsmath,graphicx, bbm}
 \usepackage{hyperref}
 
-\title{metric explain}
+\title{Metric explain}
 
 \author{Changwoon Choi}
 
 \begin{document}
 \maketitle
 \section{metrics}
+\begin{itemize}
+\item \textbf{1-NNA}, proposed by ~\cite{1-nna}, evaluates whether two distributions of distributions are identical.
+	For distribution $X$, we denote the nearest neighbor as $N_X = \text{argmin}_{Y \in S_{-X}}{d(X, Y)} $, where $S_{-X}$ represents the set including the entire generated and reference distributions except itself, $S_{-X} = S_r \cup S_g - {X}$.
+	1-NNA is defined to be
+	\begin{equation}
+		\text{1-NNA}(S_g, S_r) = \frac{
+			\sum_{X \in S_g}{\mathbbm{1}_{N_X \in S_g}} + \sum_{Y \in S_r}{\mathbbm{1}_{N_Y \in S_r}}
+		}{|S_g| + |S_r|},
+	\end{equation}
+	where $\mathbbm{1}$ is an indicator function.
+	The optimal value of 1-NNA is 50\%, when the distribution of two sets are equal, unable to distinguish the two sets.
+\item \textbf{COV} measures the proportion of shapes in the reference set that are matched to at least one distribution in the generated set, formally defined by
+\begin{equation}
+	\text{COV}(S_g, S_r) = \frac{
+		|\{\text{argmin}_{Y \in S_r} d(X, Y) | X \in S_g\}|
+	}{|S_r|}.
+\end{equation}
+\item \textbf{MMD} measures the quality of the generated set.
+	For each distribution in the reference set, we compute the distance to nearest neighbor and average it, which is formally defined by
+	\begin{equation}
+		\text{MMD}(S_g, S_r) = \frac{1}{|S_r|} \sum_{Y \in S_r}{\min_{X \in S_g}{d(X, Y)}}
+	\end{equation}
 
+\end{itemize}
 
 \bibliographystyle{IEEEbib}
 \bibliography{our_bib}
