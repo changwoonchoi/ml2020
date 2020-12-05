@@ -30,10 +30,19 @@ def make_set(dir, type='dir'):
     wave_set = []
     for wave_instance in wavfiles:
         _, sample = scipy.io.wavfile.read(wave_instance)
+        sample = cut_audio(sample)
         audio = sample.T / 2**15
         wave_set.append(audio)
     wave_set = np.stack(wave_set, axis=0)
     return wave_set
+
+
+def cut_audio(audio):
+    """
+    cut your audio which is loaded with scipy to 15872 length
+    """
+    audio = audio[:15872]
+    return audio
 
 
 def wave_set2std_set(wave_set):
@@ -60,7 +69,8 @@ def side_std(audio):
 
     return stds
 
-def wave_set2score_set(wave_set, metric='std'):
+
+def wave_set2score_set(wave_set, metric='quantile'):
     """
     convert wave set to set of scores over time
     wave_set : (N x 2 x -1)
@@ -70,11 +80,10 @@ def wave_set2score_set(wave_set, metric='std'):
     score_set = []
     for i in range(wave_set.shape[0]):
         wave = wave_set[i]
-        _, score = score_over_time(wave, metric, sr=44100, hop_size=None, display=False, continue_plot=False)
+        _, score = score_over_time(wave, metric=metric, sr=44100, hop_size=None, display=False, continue_plot=False)
         score_set.append(score)
     score_set = np.stack(score_set, axis=0)
     return score_set
-
 
 
 def normalize_std(std):
@@ -114,7 +123,9 @@ def dist_matrix(gen_set, ref_set):
     dist_mat = np.zeros((g + r, g + r))
 
     for i in range(g + r):
-        print('{} / {}'.format(i, g + r))
+        if i%100==0:
+            # prevent too frequent status printing
+            print('{} / {}'.format(i, g + r))
         for j in range(i + 1, g + r):
             dist_mat[i][j] = distance(gen_ref_set[i], gen_ref_set[j])
 
@@ -287,7 +298,7 @@ def score_over_time(audio, metric = 'std', sr=44100, win_size=1764, hop_size=Non
                           [np.sin(theta), np.cos(theta)]])
         points = np.dot(trans, audio)[0]
         for t in np.arange(0, int(l - win_size), hop_size):
-            scores.append(np.diff(np.quantile(points[t:t + win_size],[0.05,0.95]))) 
+            scores.append(np.diff(np.quantile(points[t:t + win_size],[0.05,0.95]))[0])
             
     elif metric == 'pca ratio':
         ratio = []        
