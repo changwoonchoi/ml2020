@@ -65,7 +65,7 @@ def side_std(audio):
     audio : np array of size (N x 2)
     output : normalized distribution of Side sound for input audio
     """
-    t_index, stds = std_over_time(audio, sr=44100, hop_size=1, threshold=0.125, display=False, continue_plot=False)
+    t_index, stds = std_over_time(audio, sr=44100, hop_size=None, threshold=0.125, display=False, continue_plot=False)
 
     return stds
 
@@ -90,7 +90,7 @@ def normalize_std(std):
     cum = 0
     for i in range(std.shape[0]):
         cum += std[i]
-    std *= (10000. / cum)
+    std *= (1. / cum)
     return std
 
 
