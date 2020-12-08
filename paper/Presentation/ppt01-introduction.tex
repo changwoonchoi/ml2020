@@ -1,0 +1,49 @@
+\section{Introduction}
+\subsection{Problem Formulation}
+\begin{frame}{Problem Formulation}
+    \begin{itemize}
+        \item Motivation
+        \begin{itemize}
+            \item To satisfy the modern audience, at least a stereo channel environment must be procided.\\
+            However most of neural audio synthesis models did not focus on multichannel audio generation.
+        \end{itemize}
+        \bigskip
+        \item Objective
+        \begin{itemize}
+            \item We want to make a \textbf{generative model} that produces short \textbf{stereo} audio (2-channel audio) that has good \textbf{`stereo image'}.
+        \end{itemize}
+        \bigskip
+        \item Formally,
+        \begin{itemize}
+            \item Input: random noise, condition vector
+            \item Output: short stereo audio (<1s)
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\subsection{Conjecture}
+\begin{frame}{Conjecture}
+    \begin{center}
+        \textit{``It will learn stereo image better when using \textbf{M-S} channel than using L-R channel.''}
+    \end{center}
+    \bigskip
+    \bigskip
+    \smallskip
+    \begin{enumerate}
+        \item The stereo images of the L-R channel has coherency in both channels.
+        \item When learning stereo images using M-S channel for two channels, there is no need to train coherency on both sides.
+    \end{enumerate}
+    \bigskip
+    $\therefore$ We would like to verify the conjecture above by comparing the results of train by L-R channel and M-S channel.
+\end{frame}
+
+\subsection{Contribution}
+\begin{frame}{Contribution}
+    \begin{itemize}
+        \item 
+        \bigskip
+        \item
+        \bigskip
+        \item
+    \end{itemize}
+\end{frame}

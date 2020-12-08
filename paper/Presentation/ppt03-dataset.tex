@@ -1,0 +1,78 @@
+\section{Dataset Details}
+\subsection{Stab Stereo Dataset}
+\begin{frame}{Dataset}
+    \begin{itemize}
+        \begin{columns}
+        \begin{column}{.4\textwidth}
+        \item Data spec
+        \begin{itemize}
+            \item \textbf{EDM stabs\footnotemark}
+            \item 400ms, 44.1kHz, 16bit wav
+        \end{itemize}
+        \end{column}
+        \begin{column}{.3\textwidth}
+        \includegraphics[width=\linewidth]{assets/figures/square.png}
+        \end{column}
+        \end{columns}
+        \bigskip
+        \item Features
+        \begin{itemize}
+            \item Drastic stereo image changin over time
+            \item Not too long (<1s)
+            \item Almost atonal ($\because$ frequency modulated)
+        \end{itemize}
+    \end{itemize}
+    \footnotetext[1]{Stab: A single staccato note or chord that adds dramatic punctuation to a composition.}
+\end{frame}
+
+\begin{frame}{Dataset}
+    \begin{block}{Examples}
+    \begin{minipage}{.15\textwidth}
+        \centering
+        \includegraphics[width=0.8\linewidth, height=0.5\textheight]{assets/figures/square.png}
+    \end{minipage}
+    \begin{minipage}{.15\textwidth}
+        \centering
+        \includegraphics[width=0.8\linewidth, height=0.5\textheight]{assets/figures/square.png}
+    \end{minipage}
+    \begin{minipage}{.15\textwidth}
+        \centering
+        \includegraphics[width=0.8\linewidth, height=0.5\textheight]{assets/figures/square.png}
+    \end{minipage}
+    \begin{minipage}{.15\textwidth}
+        \centering
+        \includegraphics[width=0.8\linewidth, height=0.5\textheight]{assets/figures/square.png}
+    \end{minipage}
+    \begin{minipage}{.15\textwidth}
+        \centering
+        \includegraphics[width=0.8\linewidth, height=0.5\textheight]{assets/figures/square.png}
+    \end{minipage}
+    \begin{minipage}{.15\textwidth}
+        \centering
+        \includegraphics[width=0.8\linewidth, height=0.5\textheight]{assets/figures/square.png}
+    \end{minipage}
+    \end{block}
+\end{frame}
+
+\subsection{Augmentation}
+\begin{frame}{Dataset}
+    \begin{block}{Augmentation}
+        \begin{itemize}
+            \item L/R channel changing (x2)
+            \item Time stretching w/o pitch shift (x3)
+            \item FIR filtering (x4)
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\subsection{Preprocessing}
+\begin{frame}{Dataset}
+    \begin{block}{Preprocessing}
+        \begin{itemize}
+            \item Converting original wav file to appropriate form (that network can consume directly) on-the-fly during training phase needs additional computing time and resources.
+            \item We convert audio into mel spec + IF (Instantaneous Frequency)
+        \end{itemize}
+        \centering
+        \includegraphics[scale=0.1]{assets/figures/square.png}
+    \end{block}
+\end{frame}
