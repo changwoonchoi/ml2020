@@ -1,9 +1,43 @@
+
 \begin{table}[t]
     \centering
-    \begin{tabular}{c|c}
-         &  \\
-         & 
+    \begin{tabular}{l|c|c|c}
+        \toprule
+         & COV ($\uparrow$) & MMD ($\downarrow$) & 1-NNA ($\downarrow$)\\
+         \midrule
+         LR & - & - & - \\
+         MS & - & - & - \\
+         \bottomrule
+         
     \end{tabular}
-    \caption{Caption for result table}
-    \label{result_table}
+    \caption{Quantitative comparison results of stereo generation on \textit{datasetname}.
+    	The best results are in bold.
+    	Note that MMD is multiplied by $10^3$. }
+    \label{table:result}
 \end{table}
+
+\if 0
+\begin{table}[t]
+\centering
+    \begin{tabular}{c|cc|cc|cc}
+		\toprule
+		 & \multicolumn{2}{c|}{COV ($\uparrow$)} & \multicolumn{2}{c|}{MMD ($\downarrow$)} &  \multicolumn{2}{c}{1-NNA ($\downarrow$)}\\
+		\midrule
+		Epoch & \multicolumn{1}{c|}{LR} & \multicolumn{1}{c|}{MS} & \multicolumn{1}{c|}{LR} & \multicolumn{1}{c|}{MS} & \multicolumn{1}{c|}{LR} & \multicolumn{1}{c}{MS} \\
+		\midrule
+		50&  1.04 & 1.27 & - & - & - & - \\
+		100&  - & - & - & - & - & - \\
+		150&  - & - & - & - & - & - \\
+		200&  - & - & - & - & - & - \\
+		\bottomrule
+	\end{tabular}
+    \caption{
+    	Quantitative comparison results of stereo generation on \textit{datasetname}.
+    	The best results are in bold.
+    	Note that MMD is multiplied by $10^3$. 
+    }
+    \label{table:result}
+    
+    % \vspace{-1em}
+\end{table}
+\fi
