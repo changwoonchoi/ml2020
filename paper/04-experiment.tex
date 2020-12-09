@@ -1,2 +1,46 @@
-\section{Experimental Results}
+\section{Experiments}
 \label{sec:experiment}
+
+In this section, we first introduce existing metrics for evaluating sample generation, then propose our new metrics for evaluating stereo image generation by combining existing metrics and \textit{`S-distance'}. We then compare the proposed method using M-S channels with previous method using L-R channels.
+
+\subsection{S-distance}
+\label{subsec:s-distance}
+
+
+\subsection{Evaluation metrics}
+\label{subsec:metric}
+Following prior work, we use earth mover's distance (EMD) to measure the similarity between two distributions. Formally, EMD is defined as follows:
+\begin{equation}
+    \text{EMD}(X,Y) = \min_{\phi: X\to Y} \sum_{x\in X} \|x-\phi(x)\|_2 \nonumber
+\end{equation}
+where $X$ and $Y$ are two distributions and $\phi$ is a bijection between them.
+
+
+Let $S_g$ be the set of S-distance distributions for generated stereo audios and $S_r$ be the set of reference audios' S-distance distributions with $|S_g| = |S_r|$. To evaluate generative models, we consider the three metrics, MMD, COV which are introduced by ~\cite{achlioptas} and 1-NNA proposed by ~\cite{1-nna}.
+
+\begin{itemize}
+	\item\textbf{Coverage (COV)} measures the fraction of point clouds in the reference set that are matched to at least one point cloud in the generated set. For each point cloud in the generated set, its nearest neighbor in the reference set is marked as a match:
+	\begin{align*}
+	\text{COV}(S_g, S_r) = \frac{|\{\arg\min_{Y \in S_r} D(X,Y) | X \in S_g \}|}{|S_r|},
+	\end{align*}
+	where $D(\cdot, \cdot)$ can be either CD or EMD. While coverage is able to detect mode collapse, it does not evaluate the quality of generated point clouds. In fact, it is possible to achieve a perfect coverage score even if the distances between generated and reference point clouds are arbitrarily large.
+	\item\textbf{Minimum matching distance (MMD)} is proposed to complement coverage as a metric that measures quality. For each point cloud in the reference set, the distance to its nearest neighbor in the generated set is computed and averaged:
+	\begin{equation}
+	\text{MMD}(S_g, S_r) = \frac{1}{|S_r|}\sum_{Y\in S_r} \min_{X\in S_g} D(X,Y)\,,\nonumber
+	\end{equation}
+	where $D(\cdot, \cdot)$ can be either CD or EMD. However, MMD is actually very insensitive to low-quality point clouds in $S_g$, since they are unlikely to be matched to real point clouds in $S_r$. In the extreme case, one can imagine that $S_g$ consists of mostly very low-quality point clouds with one additional point cloud in each mode of $S_r$, yet has a reasonably good MMD score.
+	\item \textbf{1-nearest neighbor accuracy (1-NNA)} is proposed by Lopez-Paz and Oquab~\cite{1-nna} for two-sample tests, assessing whether two distributions are identical.
+	Let $S_{-X} = S_r \cup S_g - \{X\}$ and $N_X$ be the nearest neighbor of $X$ in $S_{-X}$. $1$-NNA is the leave-one-out accuracy of the 1-NN classifier:
+	\begin{align*}
+	\text{1-NNA}(&S_g, S_r) \\
+	=&\frac{\sum_{X\in S_g} \mathbbm{1}[N_X \in S_g] +  \sum_{Y\in S_r} \mathbbm{1}[N_Y \in S_r]}{|S_g|+|S_r|} ,
+	\end{align*}
+	where $\mathbbm{1}[\cdot]$ is the indicator function.
+	For each sample, the 1-NN classifier classifies it as coming from $S_r$ or $S_g$ according to the label of its nearest sample.
+	If $S_g$ and $S_r$ are sampled from the same distribution, the accuracy of such a classifier should converge to $50\%$ given a sufficient number of samples. The closer the accuracy is to $50\%$, the more similar $S_g$ and $S_r$ are, and therefore the better the model is at learning the target distribution. In our setting, the nearest neighbor can be computed using either CD or EMD. Unlike JSD, 1-NNA considers the similarity between shape distributions rather than between marginal point distributions. Unlike COV and MMD, 1-NNA directly measures distributional similarity and takes both diversity and quality into account.
+\end{itemize}
+
+\subsection{Experimental results}
+\label{subsec:result}
+
+\input{assets/tables/result}
