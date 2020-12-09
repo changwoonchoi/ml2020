@@ -4,7 +4,7 @@
     \begin{itemize}
         \item Motivation
         \begin{itemize}
-            \item To satisfy the modern audience, at least a stereo channel environment must be procided.\\
+            \item To satisfy the modern audience, at least a stereo channel environment must be provided.\\
             However most of neural audio synthesis models did not focus on multichannel audio generation.
         \end{itemize}
         \bigskip
@@ -15,7 +15,7 @@
         \bigskip
         \item Formally,
         \begin{itemize}
-            \item Input: random noise, condition vector
+            \item Input: random noise
             \item Output: short stereo audio (<1s)
         \end{itemize}
     \end{itemize}
@@ -40,10 +40,10 @@
 \subsection{Contribution}
 \begin{frame}{Contribution}
     \begin{itemize}
-        \item 
+        \item First generative model that focuses on sampling audios that have high-fidelity and diverse stereo images. 
         \bigskip
-        \item
+        \item We propose a simple novel method to train 2 channel audio by reparameterizing $L-R$ to $M-S$
         \bigskip
-        \item
+        \item The introduction of a new public dataset for stereo audio that has high-fidelity and various stereo images.
     \end{itemize}
 \end{frame}
