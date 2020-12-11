@@ -19,13 +19,33 @@ pip3 install -r requirements.txt
 
 ## Dataset
 You can download our dataset at following Google Drive link. 
-[[Dataset Link](https://drive.google.com/drive/folders/1RCljf5SUgpIPMjVXdYCAYO8DNnaVTWHL?usp=sharing)]
+[[Dataset Link](https://drive.google.com/drive/folders/1RCljf5SUgpIPMjVXdYCAYO8DNnaVTWHL?usp=sharing) ] \
+In the compressed file, there are raw wav files and [train.txt](./data/train.txt), [test.txt](train.txt) for train - test split.
 
 ## Train
-
+### 1. Data preprocessing
+You can get preprocessed mel-spec and IF chunks with simply run prepare_data.py in model/ directory.
+```
+python prepare_data.py
+```
+### 2. Train Network
+You can easily train the network by running trian-MS.py \
+(You need to modify the root directories and data directories in train-MS.py) 
+```
+python train-MS.py
+```
 ## Test
+### 1. Sample from trained model
+Run the following command from the terminal in ml2020 folder:
+```
+python infer.py --type MS --model MODEL_PATH --sample_num NUM_SAMPLES --save_dir PATH_TO_SAVE
+```
 
-
+### 2. Evaluate
+If you want to evaluate your outputs, you can run the following command to get the results:
+```
+python test_metrics.py --gen_dir PATH_TO_YOUR_OUTPUTS
+```
 ## Citation
 Please cite using the following bibtex entry:
 ```
