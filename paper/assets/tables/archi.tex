@@ -1,2 +1,59 @@
-\begin{table}[t]
-\end{table}
+\begin{table*}[ht!]
+    \centering
+    \begin{tabular}{l c c c c c}
+  \toprule
+  Generator & Output Size & $k_{width}$ & $k_{height}$ & $k_{filters}$ & Nonlinearity \\
+  \midrule
+  concat(Z, pitch) & (1, 1, 264) & - & - & - & - \\
+  conv2d & (2, 16, 256) & 2 & 16 & 256 & PN(LReLU) \\
+  conv2d & (2, 16, 256) & 3 & 3 & 256 & PN(LReLU) \\
+  upsample 2x2 & (4, 32, 256) & - & - & - & - \\
+  conv2d & (4, 32, 256) & 3 & 3 & 256 & PN(LReLU) \\
+  conv2d & (4, 32, 256) & 3 & 3 & 256 & PN(LReLU) \\
+  upsample 2x2 & (8, 64, 256) & - & - & - & - \\
+  conv2d & (8, 64, 256) & 3 & 3 & 256 & PN(LReLU) \\
+  conv2d & (8, 64, 256) & 3 & 3 & 256 & PN(LReLU) \\
+  upsample 2x2 & (16, 128, 256) & - & - & - & - \\
+  conv2d & (16, 128, 256) & 3 & 3 & 256 & PN(LReLU) \\
+  conv2d & (16, 128, 256) & 3 & 3 & 256 & PN(LReLU) \\
+  upsample 2x2 & (32, 256, 256) & - & - & - & - \\
+  conv2d & (32, 256, 128) & 3 & 3 & 128 & PN(LReLU) \\
+  conv2d & (32, 256, 128) & 3 & 3 & 128 & PN(LReLU) \\
+  upsample 2x2 & (32, 512, 128) & - & - & - & - \\
+  conv2d & (32, 512, 64) & 3 & 3 & 64 & PN(LReLU) \\
+  conv2d & (32, 512, 64) & 3 & 3 & 64 & PN(LReLU) \\
+  upsample 2x2 & (32, 1024, 64) & - & - & - & - \\
+  conv2d & (32, 1024, 32) & 3 & 3 & 32 & PN(LReLU) \\
+  conv2d & (32, 1024, 32) & 3 & 3 & 32 & PN(LReLU) \\  
+  generator output & (32, 1024, 4) & 1 & 1 & 4 & Tanh \\ 
+  \toprule
+  Discriminator & Output Size & $k_{width}$ & $k_{height}$ & $k_{filters}$ & Nonlinearity \\ 
+  \midrule
+  spectrogram image & (32, 1024, 4) & - & - & - & - \\
+  conv2d & (32, 1024, 32) & 1 & 1 & 32 & LReLU \\
+  conv2d & (32, 1024, 32) & 3 & 3 & 32 & LReLU \\
+  conv2d & (32, 1024, 32) & 3 & 3 & 32 & LReLU \\
+  downsample 1x2 & (32, 512, 32) & - & - & - & - \\
+  conv2d & (32, 512, 64) & 3 & 3 & 64 & LReLU \\
+  conv2d & (32, 512, 64) & 3 & 3 & 64 & LReLU \\
+  downsample 1x2 & (32, 256, 64) & - & - & - & - \\
+  conv2d & (32, 256, 128) & 3 & 3 & 128 & LReLU \\
+  conv2d & (32, 256, 128) & 3 & 3 & 128 & LReLU \\
+  downsample 2x2 & (16, 128, 128) & - & - & - & - \\
+  conv2d & (16, 128, 256) & 3 & 3 & 256 & LReLU \\
+  conv2d & (16, 128, 256) & 3 & 3 & 256 & LReLU \\
+  downsample 2x2 & (8, 64, 256) & - & - & - & - \\
+  conv2d & (8, 64, 256) & 3 & 3 & 256 & LReLU \\
+  conv2d & (8, 64, 256) & 3 & 3 & 256 & LReLU \\
+  downsample 2x2 & (4, 32, 256) & - & - & - & - \\
+  conv2d & (4, 32, 256) & 3 & 3 & 256 & LReLU \\
+  conv2d & (4, 32, 256) & 3 & 3 & 256 & LReLU \\
+  downsample 2x2 & (2, 16, 256) & - & - & - & - \\
+  concat(x, minibatch std.) & (2, 16, 257) & - & - & - & - \\
+  conv2d & (2, 16, 256) & 3 & 3 & 256 & LReLU \\
+  conv2d & (2, 16, 256) & 3 & 3 & 256 & LReLU \\ \hline
+  % pitch classifier & (1, 1, 8) & 1 & 1 & 8 & Softmax \\
+  discriminator output & (1, 1, 1) & - & - & 1 & - \\ 
+  \bottomrule
+\end{tabular}
+\end{table*}

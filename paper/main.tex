@@ -5,21 +5,26 @@
 \usepackage{multirow}
 \usepackage{booktabs}
 \usepackage{hyperref}
+\usepackage{url}
 \usepackage[toc,page]{appendix}
-\title{Title}
+\usepackage{subfig}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+\title{the methodology for stereo image learning representation}
 
 \name{Seongrae Kim$^{\star}$ \qquad Changwoon Choi$^{\dagger}$ \qquad Sangwoo Han$^{\ddagger}$}
-\address{$^{\star}$ Machine Engineering, Seoul National University \\ $^{\dagger}$ Electrical \& Computer Engineering, Seoul National University \\$^{\ddagger}$ Earth \& Environmental Sciences, Seoul National University}
+\address{$^{\star}$ Mechanical Engineering, Seoul National University \\ $^{\dagger}$ Electrical \& Computer Engineering, Seoul National University \\$^{\ddagger}$ Earth \& Environmental Sciences, Seoul National University}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
 In this work, we present an audio generative model which is able to produce ... 
+\footnote{Dataset and code are available on \url{https://github.com/changwoonchoi/ml2020}}
 \end{abstract}
 
 \begin{keywords}
-Generative model, multi-channel audio
+Generative model, multi-channel audio, learning representation
 \end{keywords}
 
 \input{01-introduction}
@@ -29,5 +34,5 @@ Generative model, multi-channel audio
 \input{05-conclusion}
 \bibliographystyle{IEEEbib}
 \bibliography{our_bib}
-% \input{06-appendix}
+\input{06-appendix}
 \end{document}

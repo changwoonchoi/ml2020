@@ -5,7 +5,7 @@
 \end{frame}
 
 \subsection{Evaluation Metrics}
-\begin{frame}{Side distribution over time}
+\begin{frame}{Side Distance \& STSD (Short Time Side Distance)}
     \begin{center}
         \includegraphics[height=0.3\textheight]{assets/figures/square.png}
     \end{center}
@@ -13,11 +13,25 @@
         \item 
     \end{itemize}
 \end{frame}
+
 \begin{frame}{Evaluation Metrics}
-    \begin{itemize}
-        \item MMD \\
-        $MMD(G, R) = $
-    \end{itemize}
+    \begin{block}{Distance between two STSDs}
+        \begin{itemize}
+            \item Earth Mover's Distance\\
+            $EMD(s_1, s_2) = \min_{\phi: s_1\to s_2} \sum_{x\in s_1} \|x-\phi(x)\|_2$\\
+            (where $\phi$ is a bijection between $s_1, s_2$)
+        \end{itemize}
+    \end{block}
+    \begin{block}{Metric between two sets}
+        \begin{itemize}
+            \item Minimum Matching Distance\\
+            $MMD(S_g, S_r) = \frac{1}{|S_r|}\sum_{Y\in S_r} \min_{X\in S_g}D(X,Y)$
+            \item Coverage\\
+            $COV(S_g, S_r) = \frac{|\{\arg\min_{Y \in S_r} D(X,Y) | X \in S_g \}|}{|S_r|}$
+            \item 1-Nearest Neighbor Accuracy\\
+            $1-NNA(S_g, S_r) = \frac{\sum_{X\in S_g} \mathbbm{1}[N_X \in S_g] +  \sum_{Y\in S_r} \mathbbm{1}[N_Y \in S_r]}{|S_g|+|S_r|}$
+        \end{itemize}
+    \end{block}
 \end{frame}
 \subsection{Experimental Results}
 \begin{frame}{Results}
