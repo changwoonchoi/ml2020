@@ -1,5 +1,5 @@
 # Stereo Image Learning Reperesentation
-Codes for The Methodology for the paper **Stereo Image Learning Representation**. [[pdf]()] by [Changwoon Choi](https://3d.snu.ac.kr/members/), [Seongrae Kim](), [Sangwoo Han]().
+Codes for The Methodology for the paper **Stereo Image Learning Representation**. [[pdf]()] by [Changwoon Choi](http://3d.snu.ac.kr/members/), [Seongrae Kim](), [Sangwoo Han]().
 
 | | | | | |
 |:---------:|:---------:|:---------:|:---------:|:---------:|
@@ -30,7 +30,7 @@ You can download our dataset at following Google Drive link.
 Please cite using the following bibtex entry:
 ```
 @InProceedings{stereolearning,
-  author	= {Seongrae Kim and Changwoon Choi and Sangwoon Han},
+  author	= {Seongrae Kim and Changwoon Choi and Sangwoo Han},
   title 	= {The Methodology for Stereo Image Learning Representation},
   booktitle	= {},
   url		= {},
