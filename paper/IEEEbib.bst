@@ -552,7 +552,7 @@ FUNCTION {format.crossref.editor}
   if$
 }
 
-FUNCTION {format.book.crossref}
+FUNCTION {format.book.crosxxef}
 { volume empty$
     { "empty volume in " cite$ * "'s crossref of " * crossref * warning$
       "In "

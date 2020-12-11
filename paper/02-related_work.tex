@@ -1,7 +1,14 @@
 \section{Related Work}
 \label{sec:related_work}
 \subsection{Audio Generative Model}
-Recently, 
 
-~\cite{wavenet}, ~\cite{gansynth}   
+The earliest audio-generated models for audio tends to focus on speech synthesis. These datasets require handling variable length, and WaveNet~\cite{wavenet} used autoregressive method for variable length inputs and outputs. A flow-based WaveGlow~\cite{waveglow} has emerged that compensates for slow speed of autoregressive models. In comparison to speech, audio generation for music is relatively in the development stage. ~\cite{nsynth} proposed to use WaveNet for generate single musical note, but it was still slow and global latent conditioning was impossible. GANSynth~\cite{gansynth} with Generative Adversarial Network solves these shortcomings and provides high-fidelity and locally-coherent audio by modeling log magnitudes and instantaneous frequencies with sufficient frequency resolution in the spectral domain. With the current technology, it is possible to learn a single note of a variety of instruments to convincingly describe the sound of a real instrument, and to create a variety of synthesizers for interpolation between two instruments. In spite of such breakthrough development, the reason that the generated musical notes cannot be used for commercial music is that the generated result is a single channel. Despite this breakthrough, the generated musical notes cannot replace commonly used virtual instruments due to the limitation of a single channel.
+
+
 \subsection{Multi-Channel Audio}
+
+In deep learning, multi-channel settings are mainly used for speech separation~\cite{multi_ch_sourcesep}, speech enhancement~\cite{speech_enh}, and speech recognition~\cite{speech_recog} due to their ability to utilize information about speech source location. On the other hand, 
+\if 0
+Fink et al.(2015) 
+\fi
+~\cite{upmix} proposed a upmixing conversion of the mono signal to pseudo stereo in order to enhance the audio effect. However, as far as we know, there are still no attempts to generate high-fidelity multi-channel audio. It is thought that it is necessary to learn the difference while maintaining the coherency of both channels to form a spatial sense of sound. A technique referred to as “mid-side coding” exploits the common part of a stereophonic input signal by encoding the sum and difference signals of the two input signals rather than the input signals themselves.(~\cite{mscoding}) Therefore, for a high-performance multi-channel audio generative model in the future, we would like to train the GANSynth baseline through the mid-side coding to verify whether this attempt is able to effectively learn stereo image.
