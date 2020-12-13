@@ -1,17 +1,41 @@
 \section{Experimental Results}
 \subsection{Setup}
-\begin{frame}{Experiment Setup}
+
+\begin{frame}{Features of stereo audio}
+    \begin{itemize}
+        \item To evaluate the generative model, a proper distance metric between the generated samples and the samples from the dataset is essential.
+        \bigskip
+        \bigskip
+        \item Until now, however, a metric of measuring the similarity between stereo images has never been suggested.
+    \end{itemize}
     
 \end{frame}
 
-\subsection{Evaluation Metrics}
-\begin{frame}{Side Distance \& STSD (Short Time Side Distance)}
-    \begin{center}
-        \includegraphics[height=0.3\textheight]{assets/figures/square.png}
-    \end{center}
-    \begin{itemize}
-        \item 
-    \end{itemize}
+\begin{frame}{Features of stereo audio}
+    \begin{block}{Side Distance}
+        \begin{itemize}
+        \item When $y$ is a stereo audio of length $T$, we define \textit{`side distance'} $D_{side}$ as following:
+        \item $ D_{side}(y) = {\sqrt{2} \over 2}(\underset{t \in [0, T)}{\max} [y_L(t) - y_R(t)] - \underset{t \in [0, T)}{\min} [y_L(t) - y_R(t)])$
+        \end{itemize}
+        \bigskip
+        \bigskip
+        \centering
+        \includegraphics[width=0.4\linewidth]{assets/figures/scatter_38.pdf}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Features of stereo audio}
+    \begin{block}{Short-time Side Distance (STSD)}
+        \begin{itemize}
+            \item Although side distance is an indicator of how wide the given stereo audio is spread in the auditory space, it cannot express the change of the stereo image over time.
+            \item We introduce the concept of STSD to capture the characteristics of the stereo image over time.
+            \item Sequence of side distance of a windowed signal\\
+            $\rightarrow$ $STFT(y(t)) = D_{side}(y(\tau)w(t))$
+        \end{itemize}
+        \bigskip
+        \centering
+        \includegraphics[width=0.5\textwidth]{Presentation/figures/stsd_ppt.png}
+    \end{block}
 \end{frame}
 
 \begin{frame}{Evaluation Metrics}
@@ -34,6 +58,25 @@
     \end{block}
 \end{frame}
 \subsection{Experimental Results}
-\begin{frame}{Results}
+\begin{frame}{Experiment setup}
+    \begin{itemize}
+        \item GANSynth: Train with our training set that composed of mel-spec and IF produced by LR channels.
+        \bigskip
+        \bigskip
+        \item Proposed approach: Train with our training set that composed of mel-spec and IF with reparameterized MS channels.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Quantitative results}
+    \begin{itemize}
+        \item Better results on every evaluation metrics (COV, MMD, 1-NNA)
+    \end{itemize}
+    \bigskip
+    \bigskip
+    \centering
+    \includegraphics[width=0.7\textwidth]{Presentation/figures/result_table.png}
+\end{frame}
+
+\begin{frame}{Qualitative results}
     
 \end{frame}
