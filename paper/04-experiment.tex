@@ -1,12 +1,28 @@
 \section{Experiments}
 \label{sec:experiment}
 
-In this section, we first introduce existing metrics for evaluating sample generation, then propose our new metrics for evaluating stereo image generation by combining existing metrics with \textit{`Side distance' ($D_{side}$) and `Short-time Side Distance (STSD)'}. We then compare the proposed method using M-S channels with previous method using L-R channels.
+In this section, we first propose our novel representation of stereo audio, \textit{`Side distance' ($D_{side}$) and `Short-time Side Distance (STSD)'}. Next, we introduce existing metrics for evaluating sample generation, then propose our new metrics for evaluating stereo image generation by combining existing metrics with side distance and STSD. We then compare the proposed method using M-S channels with previous method using L-R channels.
 
-\subsection{Side distance and Short Time Side Distance}
-\label{subsec:s-distance}
+\subsection{Representation for stereo audio}
+\label{subsec:representation}
+The goal of generative model is to learn to produce samples that look similar to the ones on which it has been trained. Therefore, in order to evaluate the generative model, a proper distance metric between the generated samples and the samples from the dataset is essential. Until now, however, a metric of measuring the similarity between stereo images has never been suggested. In this chapter, we propose a novel representation of stereo audio that allows us to define the distance metric between them.
+
+\subsubsection{Side distance}
+\label{subsubsec:side_distance}
 \input{assets/figures/stsd}
-asdfasdfa ~\ref{fig:stsd}
+When $y$ is a stereo audio of length $T$, we define \textit{`side distance'} $D_{side}$ as following:
+\begin{equation}
+    D_{side}(y) = {\sqrt{2} \over 2}(\max_{t \in [0, T)} [y_L(t) - y_R(t)] - \min_{t \in [0, T)} [y_L(t) - y_R(t)])
+\end{equation}
+where $y_L$ and $y_R$ are left and right channel of stereo audio $y$. For robustness, we use the 0.95, 0.05 quantiles of $y_L(t) - y_R(t)$ instead of maximum and minimum. The side distance can be viewed as an index indicating how far the given stereo audio is spread as visualized in Fig.~\ref{subfig:SD}
+
+\subsubsection{Short-time Side Distance (STSD)}
+\label{subsubsec:stsd}
+Although side distance is an indicator of how wide the given stereo audio is spread in the auditory space, it cannot express the change of the stereo image over time. Therefore, we introduce the concept of \textit{`Short-time Side Distance (STSD)'} to capture the characteristics of the stereo image over time. The STSD is a sequence of side distance of a windowed signal. The procedure to obtain STSD is to divide a longer time signal into shorter segments of equal length and then compute side distance on each shorter segment. Formally,
+\begin{equation}
+    STFT(y(t)) = D_{side}(y(\tau)w(t))
+\end{equation}
+where $w(t)$ is a window function which is nonzero for short period of time. As depicted in Fig.\ref{subfig:STSD}, STSD contains the change in the side distance of the windowed short fragment of signal over time.
 \subsection{Evaluation metrics}
 \label{subsec:metric}
 Following prior work, we use earth mover's distance (EMD), proposed by~\cite{emd} to measure the similarity between two distributions. Formally, EMD is defined as follows:
@@ -25,7 +41,7 @@ Let $S_g$ be the set of generated stereo audios and $S_r$ be the set of referenc
 	While coverage is able to detect mode collapse, it does not evaluate the quality of generated stereo audios. 
 	\item\textbf{Minimum matching distance (MMD)} is proposed to complement coverage as a metric that measures quality. For each stereo audio in the reference set, the distance to its nearest neighbor in the generated set is computed and averaged:
 	\begin{equation}
-	\text{MMD}(S_g, S_r) = \frac{1}{|S_r|}\sum_{Y\in S_r} \min_{X\in S_g} D_{side}(X,Y)\,,\nonumber
+	\text{MMD}(S_g, S_r) = \frac{1}{|S_r|}\sum_{Y\in S_r} \min_{X\in S_g} D_{side}(X,Y),\nonumber
 	\end{equation}
 	
 	\item \textbf{1-nearest neighbor accuracy (1-NNA)} is proposed by Lopez-Paz and Oquab~\cite{1-nna} for two-sample tests, assessing whether two distributions are identical.
@@ -43,7 +59,15 @@ Let $S_g$ be the set of generated stereo audios and $S_r$ be the set of referenc
 \label{subsec:result}
 \subsubsection{Dataset and implementation details}
 \label{subsubsec:dataset}
+In this work, we propose a new dataset contains stereo audios with rich stereo images. The dataset consists of EDM stabs with 400ms time duration. Further details can be found in Appendix~\ref{sec:dataset_detail}. As mentioned in \ref{sec:method}, 
 
-\subsubsection{Results}
+
+\subsubsection{Quantitative results}
 \label{subsubsec:result}
+We trained both our model and GANSynth~\cite{gansynth} with same epochs in our training set. 
+
+
+\subsubsection{Comparing audio quality to concurrent work}
+\label{subsubsec:audio_quality}
+To better compare our method with concurrent work, we perform a subjective analysis over the stereo audios generated by both methods. In Fig[], we show the percentages of participants based on how they voted for the plausibility comparisons between ours and GANSynth~\cite{gansynth}. The study employed 15 participants with different backgrounds - 5 audio researchers, 10 non-technical subjects. The participants are asked to choose the better audio between ours and other work. We can observe that our method received 
 \input{assets/tables/result}

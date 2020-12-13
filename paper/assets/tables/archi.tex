@@ -1,5 +1,6 @@
-\begin{table*}[ht!]
+\begin{table}[h!]
     \centering
+    \resizebox{0.65\textwidth}{!}{
     \begin{tabular}{l c c c c c}
   \toprule
   Generator & Output Size & $k_{width}$ & $k_{height}$ & $k_{filters}$ & Nonlinearity \\
@@ -55,5 +56,7 @@
   % pitch classifier & (1, 1, 8) & 1 & 1 & 8 & Softmax \\
   discriminator output & (1, 1, 1) & - & - & 1 & - \\ 
   \bottomrule
-\end{tabular}
-\end{table*}
+\end{tabular}}
+\caption{Full description of our neural network architecture.}
+\label{table:arch}
+\end{table}

@@ -18,7 +18,7 @@ pip3 install -r requirements.txt
 ```
 
 ## Dataset
-You can download our dataset at following Google Drive link. 
+You can download our dataset at following Google Drive link.
 [[Dataset Link](https://drive.google.com/drive/folders/1RCljf5SUgpIPMjVXdYCAYO8DNnaVTWHL?usp=sharing) ] \
 In the compressed file, there are raw wav files and [train.txt](./data/train.txt), [test.txt](train.txt) for train - test split.
 
@@ -30,7 +30,7 @@ python prepare_data.py
 ```
 ### 2. Train Network
 You can easily train the network by running trian-MS.py \
-(You need to modify the root directories and data directories in train-MS.py) 
+(You need to modify the root directories and data directories in train-MS.py)
 ```
 python train-MS.py
 ```
@@ -60,5 +60,5 @@ Please cite using the following bibtex entry:
 ## License
 
 ## References
-<a id="1">[1]</a> 
+<a id="1">[1]</a>
 Jesse Engel et al.,“GANSynth: Adversarial neural audio synthesis,” in International Conference on Learning Representations, 2019.
