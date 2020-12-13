@@ -4,7 +4,7 @@ Codes for the paper **The Methodology for Stereo Image Learning Representation**
 | | | | | |
 |:---------:|:---------:|:---------:|:---------:|:---------:|
 |Dataset|![gt_1](./paper/Presentation/figures/00000105_F.gif)|![gt_2](./paper/Presentation/figures/00000149_D_sharp.gif)|![gt_3](./paper/Presentation/figures/00000159_A.gif)
-|Gansynth|![gs_1](./paper/Presentation/figures/LR220.gif)|![gs_2](./paper/Presentation/figures/LR222.gif)|![gs_3](./paper/Presentation/figures/LR226.gif)|
+|Gansynth[[1]](#1)|![gs_1](./paper/Presentation/figures/LR220.gif)|![gs_2](./paper/Presentation/figures/LR222.gif)|![gs_3](./paper/Presentation/figures/LR226.gif)|
 |Ours|![our_1](./paper/Presentation/figures/MS366(1).gif)|![our_2](./paper/Presentation/figures/MS455(2).gif)|![our_3](./paper/Presentation/figures/MS235(3).gif)|
 ## Installation
 <!---
@@ -58,3 +58,7 @@ Please cite using the following bibtex entry:
 }
 ```
 ## License
+
+## References
+<a id="1">[1]</a> 
+Jesse Engel et al.,“GANSynth: Adversarial neural audio synthesis,” in International Conference on Learning Representations, 2019.
