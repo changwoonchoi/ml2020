@@ -46,17 +46,7 @@ If you want to evaluate your outputs, you can run the following command to get t
 ```
 python test_metrics.py --gen_dir PATH_TO_YOUR_OUTPUTS
 ```
-## Citation
-Please cite using the following bibtex entry:
-```
-@InProceedings{stereolearning,
-  author	= {Seongrae Kim and Changwoon Choi and Sangwoo Han},
-  title 	= {The Methodology for Stereo Image Learning Representation},
-  booktitle	= {},
-  url		= {},
-  year		= 2021
-}
-```
+
 ## License
 
 ## References
