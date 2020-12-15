@@ -6,6 +6,9 @@ Codes for the paper **The Methodology for Stereo Image Learning Representation**
 |Dataset|![gt_1](./paper/Presentation/figures/00000105_F.gif)|![gt_2](./paper/Presentation/figures/00000149_D_sharp.gif)|![gt_3](./paper/Presentation/figures/00000159_A.gif)
 |Gansynth[[1]](#1)|![gs_1](./paper/Presentation/figures/LR220.gif)|![gs_2](./paper/Presentation/figures/LR222.gif)|![gs_3](./paper/Presentation/figures/LR226.gif)|
 |Ours|![our_1](./paper/Presentation/figures/MS366(1).gif)|![our_2](./paper/Presentation/figures/MS455(2).gif)|![our_3](./paper/Presentation/figures/MS235(3).gif)|
+
+
+You can check the sample audio corresponding to the stereo image above at the following link. ([link](https://github.com/changwoonchoi/ml2020))
 ## Installation
 <!---
 ### 1. Anaconda and environment installations
