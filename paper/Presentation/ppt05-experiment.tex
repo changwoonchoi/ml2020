@@ -54,6 +54,8 @@
             $COV(S_g, S_r) = \frac{|\{\arg\min_{Y \in S_r} D(X,Y) | X \in S_g \}|}{|S_r|}$
             \item 1-Nearest Neighbor Accuracy\\
             $1-NNA(S_g, S_r) = \frac{\sum_{X\in S_g} \mathbbm{1}[N_X \in S_g] +  \sum_{Y\in S_r} \mathbbm{1}[N_Y \in S_r]}{|S_g|+|S_r|}$
+            \bigskip
+            \item we can use $EMD(STSD(X), STSD(Y))$ as $D(X,Y)$
         \end{itemize}
     \end{block}
 \end{frame}
@@ -76,7 +78,60 @@
     \centering
     \includegraphics[width=0.7\textwidth]{Presentation/figures/result_table.png}
 \end{frame}
-
+\if 0
 \begin{frame}{Qualitative results}
-    
+	\minipage{0.08\textwidth}
+	GT
+	\endminipage
+	\minipage{0.3\textwidth}
+	\animategraphics[loop,controls,width=\linewidth]{12}{Presentation/figures/gifs/gt1-}{0}{3}
+	\endminipage\hfill
+    \minipage{0.3\textwidth}
+    \animategraphics[loop,controls,width=\linewidth]{12}{Presentation/figures/gifs/gt2-}{0}{3}
+    \endminipage\hfill
+	\minipage{0.3\textwidth}
+	\animategraphics[loop,controls,width=\linewidth]{12}{Presentation/figures/gifs/gt3-}{0}{3}
+	\endminipage
+	\\
+	\minipage{0.08\textwidth}
+	LR
+	\endminipage
+	\minipage{0.3\textwidth}
+	\animategraphics[loop,controls,width=\linewidth]{12}{Presentation/figures/gifs/lr0-}{0}{3}
+	\endminipage\hfill
+	\minipage{0.3\textwidth}
+	\animategraphics[loop,controls,width=\linewidth]{12}{Presentation/figures/gifs/lr1-}{0}{3}
+	\endminipage\hfill
+	\minipage{0.3\textwidth}
+	\animategraphics[loop,controls,width=\linewidth]{12}{Presentation/figures/gifs/lr2-}{0}{3}
+	\endminipage
+	\\
+	\minipage{0.08\textwidth}
+	MS
+	\endminipage
+	\minipage{0.3\textwidth}
+	\animategraphics[loop,controls,width=\linewidth]{12}{Presentation/figures/gifs/ms0-}{0}{3}
+	\endminipage\hfill
+	\minipage{0.3\textwidth}
+	\animategraphics[loop,controls,width=\linewidth]{12}{Presentation/figures/gifs/ms1-}{0}{3}
+	\endminipage\hfill
+	\minipage{0.3\textwidth}
+	\animategraphics[loop,controls,width=\linewidth]{12}{Presentation/figures/gifs/ms2-}{0}{3}
+	\endminipage
 \end{frame}
+\fi
+
+\begin{frame}{Qualitative Results}
+    \animategraphics[loop, controls, width=0.9\textwidth]{12}{Presentation/figures/gifs/concated-}{0}{3}
+\end{frame}
+\if 0
+\begin{frame}{test}
+    \includemedia[
+    addresource=Presentation/audio/ex1.mp3,
+    flashvars={
+        source=Presentation/audio/ex1.mp3
+        &autoPlay=true
+    }
+    ]{\fbox{Play}}{APlayer.swf}
+\end{frame}
+\fi

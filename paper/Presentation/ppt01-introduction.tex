@@ -10,21 +10,22 @@
         \bigskip
         \item Objective
         \begin{itemize}
-            \item We want to make a \textbf{generative model} that produces short \textbf{stereo} audio (2-channel audio) that has good \textbf{`stereo image'}.
+            \item We want to verify a methodology that enables the network to learn \textbf{`stereo images'} of the target \textbf{stereo audio}.
         \end{itemize}
         \bigskip
+    \end{itemize}
+\end{frame}
+\if 0
         \item Formally,
         \begin{itemize}
             \item Input: random noise
             \item Output: short stereo audio (<1s)
         \end{itemize}
-    \end{itemize}
-\end{frame}
-
+\fi
 \subsection{Conjecture}
 \begin{frame}{Conjecture}
     \begin{center}
-        \textit{``It will learn stereo image better when using \textbf{M-S} channel than using L-R channel.''}
+        \textit{``It will learn stereo image better when using \textbf{Mid-Side} (M-S) channel than using Left-Right (L-R) channel.''}
     \end{center}
     \bigskip
     \bigskip
@@ -36,14 +37,24 @@
     \bigskip
     $\therefore$ We would like to verify the conjecture above by comparing the results of train by L-R channel and M-S channel.
 \end{frame}
-
+\if 0
 \subsection{Contribution}
 \begin{frame}{Contribution}
     \begin{itemize}
-        \item First generative model that focuses on sampling audios that have high-fidelity and diverse stereo images. 
+        \item The first methodology for ensuring that the generation model focuses on sampling audios that have high-fidelity and diverse stereo images.
         \bigskip
         \item We propose a simple novel method to train 2 channel audio by reparameterizing $L-R$ to $M-S$
         \bigskip
         \item The introduction of a new public dataset for stereo audio that has high-fidelity and various stereo images.
+    \end{itemize}
+\end{frame}
+\fi
+\begin{frame}{Contribution}
+    \begin{itemize}
+        \item We propose a simple, yet effective, training scheme for stereo audio generation task.
+        \bigskip
+        \item The introduction of a new public dataset composed of two channel stereo audios which have high-fidelity and rich stereo images.
+        \bigskip
+        \item We introduce a proper representation of stereo image, namely `Side distance' and `STSD', and define the distance metric between them, enabling quantitative evaluation of the stereo image generation model.
     \end{itemize}
 \end{frame}
