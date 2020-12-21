@@ -8,7 +8,7 @@ Codes for the paper **The Methodology for Stereo Image Learning Representation**
 |Ours|![our_1](./paper/Presentation/figures/MS366(1).gif)|![our_2](./paper/Presentation/figures/MS455(2).gif)|![our_3](./paper/Presentation/figures/MS235(3).gif)|
 
 
-You can check the sample audio corresponding to the stereo image above at the following link. ([link](https://github.com/changwoonchoi/ml2020))
+You can check the sample audio corresponding to the stereo image above at the following Google Drive link. ([link](https://drive.google.com/drive/folders/1qQzWFbp7RyZdd12YDpemjAa3GlPMXVQf?usp=sharing))
 ## Installation
 <!---
 ### 1. Anaconda and environment installations
