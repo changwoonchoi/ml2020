@@ -1,18 +1,18 @@
 \section{Experiments}
 \label{sec:experiment}
 
-In this section, we first propose our novel representation of stereo audio, \textit{`Side distance' ($D_{side}$) and `Short-time Side Distance (STSD)'}. Next, we introduce existing metrics for evaluating sample generation, then propose our new metrics for evaluating stereo image generation by combining existing metrics with side distance and STSD. We then compare the proposed method using M-S channels with previous method(GANSynth~\cite{gansynth}) which consumes L-R channels.
+In this section, we first propose our novel representation of stereo audio, \textit{`Side distance' ($D_{side}$) and `Short-time Side Distance (STSD)'}. Next, we introduce existing metrics for evaluating sample generation, then propose our new metrics for evaluating stereo image generation by combining existing metrics with side distance and STSD. We then compare the proposed method using M-S channels with the previous method(GANSynth~\cite{gansynth}) which consumes L-R channels.
 
 \subsection{Representation for stereo audio}
 \label{subsec:representation}
-The goal of generative model is to learn to produce samples that look similar to the ones on which it has been trained. Therefore, in order to evaluate the generative model, a proper distance metric between the generated samples and the samples from the dataset is essential. Until now, however, a metric of measuring the similarity between stereo images has never been suggested. In this section, we propose a novel representation of stereo audio that allows us to define the distance metric between them.
+The goal of the generative model is to learn to produce samples that look similar to the ones on which it has been trained. Therefore, in order to evaluate the generative model, a proper distance metric between the generated samples and the samples from the dataset is essential. Until now, however, a metric for measuring the similarity between stereo images has never been suggested. In this section, we propose a novel representation of stereo audio that allows us to define the distance metric between them.
 
 \subsubsection{Side distance}
 \label{subsubsec:side_distance}
 \input{assets/figures/stsd}
 When $y$ is a stereo audio of length $T$, we define \textit{`side distance'} $D_{side}$ as following:
 \begin{equation}
-    D_{side}(y) = {\sqrt{2} \over 2}(\max_{t \in [0, T)} [y_L(t) - y_R(t)] - \min_{t \in [0, T)} [y_L(t) - y_R(t)])
+    D_{side}(y) = {\frac{\sqrt{2}}{2}}(\max_{t \in [0, T)} [y_L(t) - y_R(t)] - \min_{t \in [0, T)} [y_L(t) - y_R(t)])
 \end{equation}
 where $y_L$ and $y_R$ are left and right channel of stereo audio $y$. For robustness, we use the 0.95, 0.05 quantiles of $y_L(t) - y_R(t)$ instead of maximum and minimum. The side distance can be viewed as an index indicating how far the given stereo audio is spread as visualized in Fig.~\ref{subfig:SD}
 
@@ -39,7 +39,7 @@ Let $S_g$ be the set of generated stereo audios and $S_r$ be the set of referenc
 	\text{COV}(S_g, S_r) = \frac{|\{\arg\min_{Y \in S_r} D(X,Y) | X \in S_g \}|}{|S_r|},
 	\end{align*}
 	where $D(X,Y)$ is a distance metric between two stereo audios.
-	While coverage is able to detect mode collapse, it does not evaluate the quality of generated stereo audios. 
+	While coverage can detect mode collapse, it does not evaluate the quality of generated stereo audios. 
 	\item\textbf{Minimum matching distance (MMD)} is proposed to complement coverage as a metric that measures quality. For each stereo audio in the reference set, the distance to its nearest neighbor in the generated set is computed and averaged:
 	\begin{equation}
 	\text{MMD}(S_g, S_r) = \frac{1}{|S_r|}\sum_{Y\in S_r} \min_{X\in S_g} D(X,Y),\nonumber
@@ -55,20 +55,22 @@ Let $S_g$ be the set of generated stereo audios and $S_r$ be the set of referenc
 	For each sample, the 1-NN classifier classifies it as coming from $S_r$ or $S_g$ according to the label of its nearest sample.
 	If $S_g$ and $S_r$ are sampled from the same distribution, the accuracy of such a classifier should converge to $50\%$ given a sufficient number of samples. The closer the accuracy is to $50\%$, the more similar $S_g$ and $S_r$ are, and therefore the better the model is at learning the target distribution.
 \end{itemize}
-As definition of COV, MMD, 1-NNA, $D(X,Y)$ can be any distance metric between two audio samples. We use EMD(STSD($X$), STSD($Y$)) as a distance metric $D(X,Y)$.
+As a definition of COV, MMD, 1-NNA, and $D(X,Y)$ can be any distance metric between two audio samples. We use EMD(STSD($X$), STSD($Y$)) as a distance metric $D(X,Y)$.
 
 \subsection{Experimental results}
 \label{subsec:result}
+\if 0
 \subsubsection{Dataset}
 \label{subsubsec:dataset}
 In this work, we propose a new dataset contains stereo audios with rich stereo images. The dataset consists of EDM stabs with 400ms time duration. Further details can be found in Appendix~\ref{sec:dataset_detail}. 
+\fi
 
 \subsubsection{Quantitative results}
 \label{subsubsec:result}
 \input{assets/tables/result}
-For fair comparison, we trained both our model and GANSynth~\cite{gansynth} with exactly same hyperparameters (including network architectures, learning rate, epochs) in our training set. The only difference during the training scheme between GANSynth~\cite{gansynth} and proposed method is the channel encoding. Our proposed method consumes two channel audio that is reparameterized from LR representation to MS representation while GANSynth~\cite{gansynth} takes input as raw LR represented stereo audios. The quantitative results are reported in Table~\ref{table:result}. We observe that it is improved significantly by simply reparameterize the stereo audio in terms of every evaluation metrics (COV, MMD, 1-NNA).
+For a fair comparison, we trained both our model and GANSynth~\cite{gansynth} with exactly same the hyperparameters (including network architectures, learning rate, epochs) in our training set. The only difference during the training scheme between GANSynth~\cite{gansynth} and the proposed method is the channel encoding. Our proposed method consumes two-channel audio that is reparameterized from L-R representation to M-S representation while GANSynth~\cite{gansynth} takes input as raw L-R represented stereo audios. The quantitative results are reported in Table~\ref{table:result}. We observe that it is improved significantly by simply reparameterize the stereo audio in terms of every evaluation metrics (COV, MMD, 1-NNA).
 
 \subsubsection{Comparing audio quality to concurrent work}
 \label{subsubsec:audio_quality}
 \input{assets/figures/quality_result}
-To better compare our method with concurrent work, we perform a subjective analysis over the stereo audios generated by both methods. In Fig[], we show the percentages of participants based on how they voted for the plausibility comparisons between ours and GANSynth~\cite{gansynth}. The study employed 15 participants with different backgrounds - 5 audio researchers, 10 non-technical subjects. The participants are asked to choose the better audio between ours and other work. We can observe that our method received better results on both audio researcher group and non-technical subject group.
+To better compare our method with concurrent work, we perform a subjective analysis over the stereo audios generated by both methods. In Fig.~\ref{fig:quality_result}, we show the percentages of participants based on how they voted for the plausibility comparisons between ours and GANSynth~\cite{gansynth}. The study employed 15 participants with different backgrounds - 5 audio researchers, 10 non-technical subjects. The participants are asked to choose the better audio between ours and other work. We can observe that our method received better results on both the audio researcher group and the non-technical subject group.

@@ -1,13 +1,9 @@
 \section{Introduction}
 \label{sec:intro}
+From classical acoustics research to the modern music industry, spatiality is one of the most important acoustical features. Classical acoustic studies deal with spatiality with parameters such as interaural cross-correlation coefficient (IACC), lateral fraction (LF), and apparent source width (ASW)~\cite{classic}, but in the two-channel digital audio environment most familiar to the public, spatiality is mainly discussed as stereo image. The stereo image is the perceived spatial locations of the sound sources, both laterally and in-depth, within a two-channel audio signal. Stereo image control is one of the most important tasks for satisfying modern audiences in the music industry.
 
-\if 0
-Blahblah
+With the recent development of deep learning in the field of audio, several outstanding audio generative model with the neural network, which synthesizes instrumental sounds and voices, is proposed. For example, there is a well-known WaveNet~\cite{wavenet} that generates audio as an autoregressive manner in the time domain with a network, and GANSynth~\cite{gansynth}, which generates audio by image-learning based on audio converted to spectrogram with Generative Adversarial Network. Discussions on performance improvements for earlier audio generative models continued, but there are only studies to improve the fidelity of generated audio, such as NSF~\cite{nsf}, no serious discussion has been conducted on multi-channel audio generation. Conventional neural audio synthesis models, including the aforementioned models, generate plausible quality audio, but only mono audio can be generated, or support multi-channel audio generation~\cite{wavegan}, but they do not consider inter-channel coherence, resulting in low-quality spatiality. Since at least a two-channel environment must be provided to satisfy the modern audience, the need for discussion of the multi-channel audio generation with plausible spatiality is emphasized.
 
-Overall, we propose an $\cdot$. We show promising results on stereo audio generation problem with our new dataset. In summary, the main contributions of this work are:
-\begin{itemize}
-    \item 
-    \item 
-    \item 
-\end{itemize}
-\fi
+Overall, we propose a methodology that allows a two-channel audio generative network to learn stereo images of a target audio set. We approach the problem from a channel split perspective to enable the network to learn stereo images. We apply our conjecture to an architecture based on GANSynth~\cite{gansynth} to verify our proposed methodology. We show promising results on the stereo audio generation problem with our new dataset.
+
+In summary, the main contributions of this work are: \textbf{1)} We propose a simple, yet effective, training scheme for stereo audio generation task. \textbf{2)} The introduction of a new public dataset composed of two-channel stereo audios that have high-fidelity and rich stereo images. \textbf{3)} We introduce a proper representation of the stereo image, namely `Side distance' and `STSD', and define the distance metric between them, enabling quantitative evaluation of the stereo image generation model.
