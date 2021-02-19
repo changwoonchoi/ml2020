@@ -1,5 +1,5 @@
 # Stereo Image Learning Representation
-Codes for the paper **The Methodology for Stereo Image Learning Representation**. [[pdf](https://nbviewer.jupyter.org/github/changwoonchoi/ml2020/blob/master/paper/The_Methodology_for_Stereo_Image_Learning_Representation.pdf)] by [Changwoon Choi](http://3d.snu.ac.kr/members/), [Seongrae Kim](), [Sangwoo Han]().
+Codes for the paper **The Methodology for Stereo Image Learning Representation**. [[pdf](https://nbviewer.jupyter.org/github/changwoonchoi/ml2020/blob/master/paper/The_Methodology_for_Stereo_Image_Learning_Representation.pdf)] by [Changwoon Choi](http://3d.snu.ac.kr/members/), [Seongrae Kim](https://www.sound.kaist.ac.kr/about), [Sangwoo Han]().
 
 | | | | | |
 |:---------:|:---------:|:---------:|:---------:|:---------:|
